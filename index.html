@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>处方笺编辑器</title>
+    <style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:"SimSun", "宋体",serif;}
+body{background:#eee;padding:20px;}
+.wrap{width:1360px;margin:0 auto;background:#fff;padding:30px;box-shadow:0 2px 8px #ccc;}
+/*标题字号36px，下方间距55px保持不变*/
+.top-title{display:flex;justify-content:center;align-items:center;position:relative;font-size:36px;font-weight:bold;letter-spacing:6px;margin-bottom:55px;}
+.top-title .title-name{position:absolute;left:50%;transform:translateX(-50%);}
+.top-title .title-right{position:absolute;right:60px;display:flex;align-items:center;gap:4px;}
+.top-title .box-right{border:2px solid #333;padding:4px 12px;font-size:28px;letter-spacing:2px;}
+
+/*第一行：定点医疗机构编码【居中】，就诊类型【右对齐】*/
+.row1{display:flex;justify-content:space-between;position:relative;font-size:18px;margin-bottom:10px;padding:0 60px;}
+.row1 .left-item{position:absolute;left:50%;transform:translateX(-50%);}
+.row1 .right-item{margin-left:auto;}
+
+/*第二行：处方编号【居中】，费别【右对齐】*/
+.row2{display:flex;justify-content:space-between;position:relative;font-size:18px;margin-bottom:24px;padding:0 60px;}
+.row2 .left-item{position:absolute;left:50%;transform:translateX(-50%);}
+.row2 .right-item{margin-left:auto;}
+
+/*科室、药房、身份 两端对齐撑满整行*/
+.info-line-1{display:flex;justify-content:space-between;font-size:20px;padding:0 10px;margin-bottom:20px;}
+.info-line-1 span{display:flex;align-items:center;}
+
+/*姓名信息行保持原样靠左*/
+.info-line-2{display:flex;gap:60px;font-size:20px;padding:0 10px;margin-bottom:20px;}
+.info-line-2 span{display:flex;align-items:center;}
+
+.info-line-2 input,.info-line-1 input{border:none;font-size:20px;width:140px;outline:none;padding:2px;}
+/*主处方框*/
+.main-box{border:2px solid #000;display:grid;grid-template-columns:240px 1fr;min-height:480px;}
+.left-col{border-right:2px solid #000;padding:16px;font-size:22px;line-height:2.2;display:flex;flex-direction:column;justify-content:space-between;}
+.right-col{padding:20px;font-size:24px;line-height:2.4;display:flex;flex-direction:column;justify-content:space-between;}
+.r-mark{font-size:60px;font-style:italic;margin-bottom:8px;}
+.drug-text{border:none;outline:none;display:block;}
+.bottom-note{border-top:2px solid #000;padding:16px;font-size:18px;line-height:1.6;}
+.sign-row{display:flex;justify-content:flex-end;gap:120px;padding:10px 0;font-size:20px;align-items:center;}
+/*底部审核栏，加大每项之间间距，保留下划线*/
+.bottom-bar{margin-top:20px;display:flex;justify-content:space-between;padding:0 10px;font-size:18px;gap:80px;}
+.bottom-bar span{display:flex;align-items:center;gap:12px;}
+.bottom-bar input{border:none;border-bottom:1px solid #000;width:110px;font-size:18px;padding:2px;outline:none;}
+[contenteditable="true"]:focus{background:transparent;outline:none;border:none;}
+
+/*免责弹窗样式*/
+.modal-mask{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.55);
+    z-index:999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.modal-box{
+    width:520px;
+    background:#fff;
+    padding:30px;
+    border-radius:8px;
+}
+.modal-box h3{
+    text-align:center;
+    margin-bottom:16px;
+    font-size:22px;
+}
+.modal-box .content{
+    font-size:16px;
+    line-height:1.8;
+    color:#333;
+    margin-bottom:24px;
+}
+.modal-btn{
+    width:100%;
+    padding:10px;
+    font-size:17px;
+    cursor:pointer;
+    background:#b8e0f8;
+    color:#000;
+    border:none;
+    border-radius:4px;
+}
+	.modal-btn:hover{
+	    background:#94cdee;
+	}
+
+	.export-tools{width:1360px;margin:0 auto 16px;display:flex;justify-content:flex-end;position:relative;z-index:10;}
+	.export-toggle{padding:9px 20px;background:#b8e0f8;color:#000;border:1px solid #76bde1;border-radius:4px;font-size:16px;cursor:pointer;}
+	.export-toggle:hover,.export-toggle[aria-expanded="true"]{background:#94cdee;}
+	.export-menu{position:absolute;top:calc(100% + 6px);right:0;display:none;min-width:190px;padding:6px;background:#fff;border:1px solid #ccc;border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.16);}
+	.export-menu.is-open{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+	.export-option{padding:8px 12px;background:#fff;border:1px solid #ccc;border-radius:3px;font-size:14px;cursor:pointer;}
+	.export-option:hover{background:#eef8fd;border-color:#76bde1;}
+	.export-tools.is-exporting button{cursor:wait;opacity:.7;}
+	.export-tools button:disabled{cursor:not-allowed;}
+	@media(max-width:1420px){body{min-width:1420px;}.export-tools{margin-left:30px;}}
+    </style>
+</head>
+<body>
+<!--免责声明弹窗-->
+<div class="modal-mask" id="disclaimerModal">
+    <div class="modal-box">
+        <h3>⚠️免责声明⚠️</h3>
+        <div class="content">
+            1. 本网站仅为文档版式、样式排版演示学习工具，仅供UI设计、网页布局练习预览使用，不属于医疗服务平台，不具备任何医疗机构、执业医师诊疗资质。<br>
+
+2. 网站内提供的处方模板仅为版式样例，不具备任何真实医疗文书法律效力，严禁用于伪造、变造、套用真实处方、病历、诊断证明等医疗文件，严禁用于违法用途。<br>
+
+3. 用户自行在模板内填写的疾病名称、药品名称、医师姓名、日期等全部内容，均仅为文本编辑效果，不代表任何医师诊断、用药建议。如有身体疾病，请前往正规医疗机构就诊，遵从执业医师指导用药，切勿依据本网站内容自行用药。<br>
+
+4. 用户使用本网站，即表示知晓并同意本免责条款。如用户违反法律法规使用本模板，由此产生的一切民事、行政、刑事法律责任，均由使用者本人独立全部承担，本站不承担任何连带责任。<br>
+
+5. 本站不对用户编辑内容的真实性、合法性、准确性做任何担保，不对使用本网站产生的任何直接或间接损失承担赔偿责任。
+
+6. 本声明最终解释权归本站所有。
+        </div>
+        <button class="modal-btn" onclick="closeModal()">我已阅读并同意</button>
+    </div>
+</div>
+
+<div class="export-tools" id="exportTools">
+    <button class="export-toggle" id="exportToggle" type="button" aria-expanded="false" aria-controls="exportMenu">导出</button>
+    <div class="export-menu" id="exportMenu" role="menu">
+        <button class="export-option" type="button" data-export-format="jpg" role="menuitem">导出 JPG</button>
+        <button class="export-option" type="button" data-export-format="png" role="menuitem">导出 PNG</button>
+        <button class="export-option" type="button" data-export-format="pdf" role="menuitem">导出 PDF</button>
+        <button class="export-option" type="button" data-export-format="svg" role="menuitem">导出 SVG</button>
+    </div>
+</div>
+
+<div class="wrap">
+    <!--标题区域改为可编辑-->
+    <div class="top-title">
+        <div class="title-name" contenteditable="true">A省精神卫生中心</div>
+        <div class="title-right">
+            <span>处方笺</span>
+            <div class="box-right">底方</div>
+        </div>
+    </div>
+    <div class="row1">
+        <div class="left-item">定点医疗机构编码：<span contenteditable>1234567890</span></div>
+        <div class="right-item">就诊类型：<span contenteditable>普通门诊</span></div>
+    </div>
+    <div class="row2">
+        <div class="left-item">处方编号：<span contenteditable>1234567890</span></div>
+        <div class="right-item">费别：<span contenteditable>自费</span></div>
+    </div>
+    <!--科室、药房、身份自动均分间距撑满整行-->
+    <div class="info-line-1">
+        <span>科室：<span contenteditable>临床心理科</span></span>
+        <span>药房：<span contenteditable>门诊药房</span></span>
+        <span>身份：<span contenteditable>一般人员</span></span>
+    </div>
+    <div class="info-line-2">
+        <span>姓名：<span contenteditable>张三</span></span>
+        <span>性别：<span contenteditable>男</span></span>
+        <span>年龄：<span contenteditable>123</span></span>
+        <span>单位：<input type="text"></span>
+    </div>
+    <!--主处方框 说明文字移至表格最底部-->
+    <div class="main-box">
+        <div class="left-col">
+            <div>临床诊断：<br>
+                <input type="text" value="易性症" style="width:100%;border:none;font-size:22px;margin-top:6px;outline:none;">
+            </div>
+            <div class="bottom-note">
+                说明：药物名称前标注<br>有▲表示需皮试药品。
+            </div>
+        </div>
+        <div class="right-col">
+            <div>
+                <div class="r-mark">℞</div>
+                <div class="drug-text" contenteditable="true">[1]戊酸雌二醇片 21粒/板/盒 BID.口服</div>
+            </div>
+            <div class="sign-row">
+                <span>医师签字：<span contenteditable style="font-family:'KaiTi';font-size:36px;">李四</span></span>
+                <span>日期：<span contenteditable>0001-00-00</span></span>
+            </div>
+        </div>
+    </div>
+    <!--底部审核行-->
+    <div class="bottom-bar">
+        <span>审核 <input value="王小明"></span>
+        <span>调配 <input value="李小红"></span>
+        <span>核对 <input value="张小刚"></span>
+        <span>发药 <input value="赵小丽"></span>
+        <span>金额 <input value="1234"></span>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script>
+//关闭弹窗
+function closeModal(){
+    document.getElementById("disclaimerModal").style.display="none";
+}
+document.querySelectorAll('[contenteditable]').forEach(el=>{
+    el.addEventListener('keydown',e=>{
+        if(e.key==='Enter') e.preventDefault();
+    })
+})
+
+const exportTools=document.getElementById('exportTools');
+const exportToggle=document.getElementById('exportToggle');
+const exportMenu=document.getElementById('exportMenu');
+const exportTarget=document.querySelector('.wrap');
+const exportOptions=document.querySelectorAll('[data-export-format]');
+
+function setExportMenu(open){
+    exportMenu.classList.toggle('is-open',open);
+    exportToggle.setAttribute('aria-expanded',open);
+}
+
+function downloadFile(dataUrl,fileName){
+    const link=document.createElement('a');
+    link.href=dataUrl;
+    link.download=fileName;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+}
+
+function exportFileName(extension){
+    const now=new Date();
+    const stamp=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0'),String(now.getHours()).padStart(2,'0'),String(now.getMinutes()).padStart(2,'0'),String(now.getSeconds()).padStart(2,'0')].join('');
+    return `处方笺_${stamp}.${extension}`;
+}
+
+async function exportPrescription(format){
+    if(!window.htmlToImage||(format==='pdf'&&!window.jspdf)){
+        alert('导出组件加载失败，请检查网络后刷新页面重试。');
+        return;
+    }
+
+    if(document.activeElement) document.activeElement.blur();
+    exportTools.classList.add('is-exporting');
+    exportOptions.forEach(button=>button.disabled=true);
+    exportToggle.disabled=true;
+    exportToggle.textContent='正在导出…';
+    setExportMenu(false);
+
+    const options={backgroundColor:'#ffffff',pixelRatio:2,cacheBust:true};
+    try{
+        if(format==='jpg'){
+            const dataUrl=await htmlToImage.toJpeg(exportTarget,{...options,quality:.95});
+            downloadFile(dataUrl,exportFileName('jpg'));
+        }else if(format==='png'){
+            const dataUrl=await htmlToImage.toPng(exportTarget,options);
+            downloadFile(dataUrl,exportFileName('png'));
+        }else if(format==='svg'){
+            const dataUrl=await htmlToImage.toSvg(exportTarget,{backgroundColor:'#ffffff',cacheBust:true});
+            downloadFile(dataUrl,exportFileName('svg'));
+        }else if(format==='pdf'){
+            const imageData=await htmlToImage.toPng(exportTarget,options);
+            const {jsPDF}=window.jspdf;
+            const orientation=exportTarget.offsetWidth>=exportTarget.offsetHeight?'landscape':'portrait';
+            const pdf=new jsPDF({orientation,unit:'mm',format:'a4'});
+            const pageWidth=pdf.internal.pageSize.getWidth();
+            const pageHeight=pdf.internal.pageSize.getHeight();
+            const margin=10;
+            const scale=Math.min((pageWidth-margin*2)/exportTarget.offsetWidth,(pageHeight-margin*2)/exportTarget.offsetHeight);
+            const imageWidth=exportTarget.offsetWidth*scale;
+            const imageHeight=exportTarget.offsetHeight*scale;
+            pdf.addImage(imageData,'PNG',(pageWidth-imageWidth)/2,(pageHeight-imageHeight)/2,imageWidth,imageHeight);
+            pdf.save(exportFileName('pdf'));
+        }
+    }catch(error){
+        console.error('导出失败：',error);
+        alert('导出失败，请稍后重试。');
+    }finally{
+        exportTools.classList.remove('is-exporting');
+        exportOptions.forEach(button=>button.disabled=false);
+        exportToggle.disabled=false;
+        exportToggle.textContent='导出';
+    }
+}
+
+exportToggle.addEventListener('click',()=>setExportMenu(!exportMenu.classList.contains('is-open')));
+exportOptions.forEach(button=>button.addEventListener('click',()=>exportPrescription(button.dataset.exportFormat)));
+document.addEventListener('click',event=>{
+    if(!exportTools.contains(event.target)) setExportMenu(false);
+});
+</script>
+</body>
+</html>
