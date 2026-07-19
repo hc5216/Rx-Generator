@@ -106,21 +106,6 @@ body{background:#eee;padding:20px;}
 	.export-tools button:disabled{cursor:not-allowed;}
 
 	/* 原创通用视觉预设，不对应任何真实医疗机构或正式文书。 */
-	.wrap[data-preset="modern"]{background:#fafdfe;border-top:7px solid #287d82;box-shadow:0 4px 16px #b8cdd0;color:#18383b;font-family:Arial,"Microsoft YaHei",sans-serif;}
-	.wrap[data-preset="modern"] *{font-family:Arial,"Microsoft YaHei",sans-serif;}
-	.wrap[data-preset="modern"] .top-title{color:#176b70;letter-spacing:3px;margin-bottom:44px;}
-	.wrap[data-preset="modern"] .top-title .box-right{border-color:#287d82;border-radius:16px;color:#176b70;font-size:22px;padding:5px 13px;}
-	.wrap[data-preset="modern"] .row1,.wrap[data-preset="modern"] .row2{color:#4b6669;}
-	.wrap[data-preset="modern"] .info-line-1,.wrap[data-preset="modern"] .info-line-2{padding:14px 18px;margin-bottom:12px;background:#eef7f7;border-radius:7px;}
-	.wrap[data-preset="modern"] .main-box{border:1px solid #91c6c8;border-radius:10px;overflow:hidden;grid-template-columns:280px 1fr;}
-	.wrap[data-preset="modern"] .left-col{background:#f2f9f9;border-right:1px solid #91c6c8;color:#24585c;}
-	.wrap[data-preset="modern"] .right-col{color:#18383b;}
-	.wrap[data-preset="modern"] .r-mark{color:#287d82;}
-	.wrap[data-preset="modern"] .bottom-note{border-top:1px solid #91c6c8;}
-	.wrap[data-preset="modern"] .sign-row{color:#176b70;}
-	.wrap[data-preset="modern"] .bottom-bar{padding:14px 18px;background:#eef7f7;border-radius:7px;color:#24585c;}
-	.wrap[data-preset="modern"] .bottom-bar input{border-bottom-color:#5e989c;}
-
 	.wrap[data-preset="ledger"]{background:#fcfcfa;box-shadow:0 2px 7px #bdbdb9;color:#1e1e1e;}
 	.wrap[data-preset="ledger"] .top-title{justify-content:flex-start;padding-bottom:13px;border-bottom:3px double #222;letter-spacing:2px;margin-bottom:32px;}
 	.wrap[data-preset="ledger"] .top-title .title-name{position:static;transform:none;}
@@ -133,20 +118,6 @@ body{background:#eee;padding:20px;}
 	.wrap[data-preset="ledger"] .bottom-note{border-top:1px solid #222;}
 	.wrap[data-preset="ledger"] .bottom-bar{padding:12px 10px;border-top:3px double #222;}
 	.wrap[data-preset="ledger"] .bottom-bar input{border-bottom-color:#333;}
-
-	.wrap[data-preset="blue"]{background:#f4f9ff;border:1px solid #b9d5ec;box-shadow:0 4px 15px #c2d2df;color:#183b5b;}
-	.wrap[data-preset="blue"] .top-title{color:#175c96;letter-spacing:4px;margin-bottom:46px;}
-	.wrap[data-preset="blue"] .top-title .box-right{border-color:#4f94c9;background:#e4f2ff;color:#175c96;border-radius:4px;font-size:23px;}
-	.wrap[data-preset="blue"] .row1,.wrap[data-preset="blue"] .row2{color:#426684;}
-	.wrap[data-preset="blue"] .info-line-1,.wrap[data-preset="blue"] .info-line-2{padding:11px 15px;margin-bottom:13px;background:#eaf4fd;border-left:4px solid #75afe0;}
-	.wrap[data-preset="blue"] .main-box{border:2px solid #75afe0;border-radius:6px;overflow:hidden;}
-	.wrap[data-preset="blue"] .left-col{border-right:2px solid #a4cce9;background:#edf6fe;color:#265d87;}
-	.wrap[data-preset="blue"] .right-col{color:#183b5b;}
-	.wrap[data-preset="blue"] .r-mark{color:#367fb9;}
-	.wrap[data-preset="blue"] .bottom-note{border-top:2px solid #a4cce9;}
-	.wrap[data-preset="blue"] .sign-row{color:#265d87;}
-	.wrap[data-preset="blue"] .bottom-bar{padding:13px 15px;background:#eaf4fd;border-radius:5px;color:#265d87;}
-	.wrap[data-preset="blue"] .bottom-bar input{border-bottom-color:#609dcc;}
 	@media(max-width:1420px){body{min-width:1420px;}.preset-tools,.export-tools{margin-left:30px;}}
     </style>
 </head>
@@ -176,9 +147,7 @@ body{background:#eee;padding:20px;}
     <label for="presetSelect">样式预设</label>
     <select class="preset-select" id="presetSelect">
         <option value="classic">经典处方</option>
-        <option value="modern">现代临床</option>
         <option value="ledger">极简账册</option>
-        <option value="blue">柔和蓝调</option>
     </select>
     <span class="preset-description" id="presetDescription">经典黑白分栏版式</span>
 </div>
@@ -274,9 +243,7 @@ const presetSelect=document.getElementById('presetSelect');
 const presetDescription=document.getElementById('presetDescription');
 const presets={
     classic:'经典黑白分栏版式',
-    modern:'清爽分区与蓝绿强调',
-    ledger:'黑白细线与信息层级',
-    blue:'浅蓝纸张感与柔和分区'
+    ledger:'黑白细线与信息层级'
 };
 
 function applyPreset(preset){
