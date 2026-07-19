@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>处方笺编辑器</title>
     <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:"SimSun", "宋体",serif;}
+	@font-face{font-family:"Ma Shan Zheng";src:url("assets/fonts/ma-shan-zheng/MaShanZheng-Regular.ttf") format("truetype");font-display:swap;}
+	@font-face{font-family:"Long Cang";src:url("assets/fonts/long-cang/LongCang-Regular.ttf") format("truetype");font-display:swap;}
+	@font-face{font-family:"Zhi Mang Xing";src:url("assets/fonts/zhi-mang-xing/ZhiMangXing-Regular.ttf") format("truetype");font-display:swap;}
+	@font-face{font-family:"Liu Jian Mao Cao";src:url("assets/fonts/liu-jian-mao-cao/LiuJianMaoCao-Regular.ttf") format("truetype");font-display:swap;}
+
+	*{box-sizing:border-box;margin:0;padding:0;font-family:"SimSun", "宋体",serif;}
 body{background:#eee;padding:20px;}
 .wrap{width:1360px;margin:0 auto;background:#fff;padding:30px;box-shadow:0 2px 8px #ccc;}
 /*标题字号36px，下方间距55px保持不变*/
@@ -40,8 +45,13 @@ body{background:#eee;padding:20px;}
 .r-mark{font-size:60px;font-style:italic;margin-bottom:8px;}
 .drug-text{border:none;outline:none;display:block;}
 .bottom-note{border-top:2px solid #000;padding:16px;font-size:18px;line-height:1.6;}
-.sign-row{display:flex;justify-content:flex-end;gap:120px;padding:10px 0;font-size:20px;align-items:center;}
-/*底部审核栏，加大每项之间间距，保留下划线*/
+	.sign-row{display:flex;justify-content:flex-end;gap:80px;padding:10px 0;font-size:20px;align-items:center;}
+	.signature-field{display:inline-block;max-width:290px;overflow-wrap:anywhere;vertical-align:middle;font-family:"KaiTi","STKaiti","SimKai",cursive;font-size:36px;line-height:1.25;}
+	.signature-field[data-font="ma-shan-zheng"]{font-family:"Ma Shan Zheng","KaiTi",cursive;}
+	.signature-field[data-font="long-cang"]{font-family:"Long Cang","KaiTi",cursive;}
+	.signature-field[data-font="zhi-mang-xing"]{font-family:"Zhi Mang Xing","KaiTi",cursive;}
+	.signature-field[data-font="liu-jian-mao-cao"]{font-family:"Liu Jian Mao Cao","KaiTi",cursive;}
+	/*底部审核栏，加大每项之间间距，保留下划线*/
 .bottom-bar{margin-top:20px;display:flex;justify-content:space-between;padding:0 10px;font-size:18px;gap:80px;}
 .bottom-bar span{display:flex;align-items:center;gap:12px;}
 .bottom-bar input{border:none;border-bottom:1px solid #000;width:110px;font-size:18px;padding:2px;outline:none;}
@@ -93,6 +103,7 @@ body{background:#eee;padding:20px;}
 
 	.export-tools{width:1360px;margin:0 auto 16px;display:flex;justify-content:flex-end;position:relative;z-index:10;}
 	.preset-tools{width:1360px;margin:0 auto 12px;display:flex;justify-content:flex-end;align-items:center;gap:10px;}
+	.signature-tools{margin-bottom:16px;}
 	.preset-tools label{font-size:16px;font-weight:bold;}
 	.preset-select{min-width:170px;padding:8px 34px 8px 10px;background:#fff;border:1px solid #76bde1;border-radius:4px;font-size:15px;cursor:pointer;}
 	.preset-description{min-width:250px;color:#555;font-size:14px;}
@@ -152,6 +163,18 @@ body{background:#eee;padding:20px;}
     <span class="preset-description" id="presetDescription">经典黑白分栏版式</span>
 </div>
 
+<div class="preset-tools signature-tools">
+    <label for="signatureFontSelect">签名字体</label>
+    <select class="preset-select" id="signatureFontSelect">
+        <option value="kaiti">标准楷体</option>
+        <option value="ma-shan-zheng">马善政</option>
+        <option value="long-cang">龙藏</option>
+        <option value="zhi-mang-xing">知芒行</option>
+        <option value="liu-jian-mao-cao">刘建毛草</option>
+    </select>
+    <span class="preset-description" id="signatureFontDescription">通用楷体展示</span>
+</div>
+
 <div class="export-tools" id="exportTools">
     <button class="export-toggle" id="exportToggle" type="button" aria-expanded="false" aria-controls="exportMenu">导出</button>
     <div class="export-menu" id="exportMenu" role="menu">
@@ -207,7 +230,7 @@ body{background:#eee;padding:20px;}
                 <div class="drug-text" contenteditable="true">[1]戊酸雌二醇片 21粒/板/盒 BID.口服</div>
             </div>
             <div class="sign-row">
-                <span>医师签字：<span contenteditable style="font-family:'KaiTi';font-size:36px;">李四</span></span>
+                <span>医师签字：<span class="signature-field" id="signatureField" contenteditable="true" data-font="kaiti">李四</span></span>
                 <span>日期：<span contenteditable>0001-00-00</span></span>
             </div>
         </div>
@@ -241,21 +264,52 @@ const exportTarget=document.querySelector('.wrap');
 const exportOptions=document.querySelectorAll('[data-export-format]');
 const presetSelect=document.getElementById('presetSelect');
 const presetDescription=document.getElementById('presetDescription');
+const signatureField=document.getElementById('signatureField');
+const signatureFontSelect=document.getElementById('signatureFontSelect');
+const signatureFontDescription=document.getElementById('signatureFontDescription');
 const presets={
     classic:'经典黑白分栏版式',
     ledger:'黑白细线与信息层级'
 };
+const signatureFontPresets={
+    kaiti:{label:'通用楷体展示',font:'36px "KaiTi"'},
+    'ma-shan-zheng':{label:'粗犷书法展示体',font:'36px "Ma Shan Zheng"'},
+    'long-cang':{label:'现代书写展示体',font:'36px "Long Cang"'},
+    'zhi-mang-xing':{label:'行书风格展示体',font:'36px "Zhi Mang Xing"'},
+    'liu-jian-mao-cao':{label:'流动草书展示体',font:'36px "Liu Jian Mao Cao"'}
+};
+
+function readStoredValue(key){
+    try{return localStorage.getItem(key)}catch(error){return null}
+}
+
+function saveStoredValue(key,value){
+    try{localStorage.setItem(key,value)}catch(error){}
+}
 
 function applyPreset(preset){
     const selectedPreset=Object.hasOwn(presets,preset)?preset:'classic';
     exportTarget.dataset.preset=selectedPreset;
     presetSelect.value=selectedPreset;
     presetDescription.textContent=presets[selectedPreset];
-    localStorage.setItem('rxGeneratorPreset',selectedPreset);
+    saveStoredValue('rxGeneratorPreset',selectedPreset);
 }
 
-applyPreset(localStorage.getItem('rxGeneratorPreset'));
+async function applySignatureFontPreset(fontPreset){
+    const selectedFont=Object.hasOwn(signatureFontPresets,fontPreset)?fontPreset:'kaiti';
+    signatureField.dataset.font=selectedFont;
+    signatureFontSelect.value=selectedFont;
+    signatureFontDescription.textContent=signatureFontPresets[selectedFont].label;
+    saveStoredValue('rxGeneratorSignatureFontPreset',selectedFont);
+    if(document.fonts&&selectedFont!=='kaiti'){
+        try{await document.fonts.load(signatureFontPresets[selectedFont].font)}catch(error){}
+    }
+}
+
+applyPreset(readStoredValue('rxGeneratorPreset'));
+applySignatureFontPreset(readStoredValue('rxGeneratorSignatureFontPreset'));
 presetSelect.addEventListener('change',event=>applyPreset(event.target.value));
+signatureFontSelect.addEventListener('change',event=>applySignatureFontPreset(event.target.value));
 
 function setExportMenu(open){
     exportMenu.classList.toggle('is-open',open);
@@ -284,6 +338,7 @@ async function exportPrescription(format){
     }
 
     if(document.activeElement) document.activeElement.blur();
+    if(document.fonts) await document.fonts.ready;
     exportTools.classList.add('is-exporting');
     exportOptions.forEach(button=>button.disabled=true);
     exportToggle.disabled=true;
