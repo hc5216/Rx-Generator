@@ -129,6 +129,46 @@ body{background:#eee;padding:20px;}
 	.wrap[data-preset="ledger"] .bottom-note{border-top:1px solid #222;}
 	.wrap[data-preset="ledger"] .bottom-bar{padding:12px 10px;border-top:3px double #222;}
 	.wrap[data-preset="ledger"] .bottom-bar input{border-bottom-color:#333;}
+
+	/* 竖版专用字段：默认隐藏，仅在竖版预设中显示。原创通用门诊处方版式演示。 */
+	.portrait-only{display:none !important;}
+	.seal-mark{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border:2px solid #c0392b;border-radius:50%;color:#c0392b;font-size:20px;font-weight:bold;letter-spacing:0;}
+	.fee-tag{border:1px solid #444;padding:2px 8px;font-size:16px;}
+	.dashed-divider{border:none;border-top:1px dashed #888;margin:18px 0;}
+	.portrait-footer{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #000;margin-top:14px;font-size:17px;}
+	.portrait-footer .pf-col{padding:10px 14px;}
+	.portrait-footer .pf-col:first-child{border-right:1px solid #000;}
+	.portrait-footer .pf-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;}
+	.portrait-footer .pf-row span{display:flex;align-items:center;gap:8px;}
+	.portrait-footer input{border:none;border-bottom:1px solid #000;font-size:17px;padding:1px 2px;outline:none;min-width:90px;}
+	.portrait-summary{display:flex;justify-content:space-between;align-items:center;border:1px solid #000;border-top:none;padding:8px 14px;font-size:17px;}
+	.portrait-note{margin-top:10px;font-size:15px;color:#333;line-height:1.6;}
+
+	/* 竖版（门诊）预设：纵向单栏排版。 */
+	.wrap[data-preset="portrait"]{width:760px;padding:26px 30px;}
+	.wrap[data-preset="portrait"] .top-title{font-size:30px;letter-spacing:4px;margin-bottom:10px;}
+	.wrap[data-preset="portrait"] .top-title .title-name{position:static;transform:none;}
+	.wrap[data-preset="portrait"] .top-title .title-right{right:0;gap:10px;align-items:center;}
+	.wrap[data-preset="portrait"] .top-title .box-right{border:none;padding:0;font-size:18px;}
+	.wrap[data-preset="portrait"] .portrait-only{display:block !important;}
+	.wrap[data-preset="portrait"] .top-title .title-right .seal-mark,
+	.wrap[data-preset="portrait"] .top-title .title-right .fee-tag{display:inline-flex !important;}
+	.wrap[data-preset="portrait"] .row1,.wrap[data-preset="portrait"] .row2{display:block;font-size:16px;margin-bottom:6px;padding:0;text-align:left;}
+	.wrap[data-preset="portrait"] .row1 .left-item,.wrap[data-preset="portrait"] .row1 .right-item,
+	.wrap[data-preset="portrait"] .row2 .left-item,.wrap[data-preset="portrait"] .row2 .right-item{position:static;margin:0;display:inline-block;margin-right:24px;transform:none;}
+	.wrap[data-preset="portrait"] .info-line-1,.wrap[data-preset="portrait"] .info-line-2{display:block;font-size:16px;padding:0;margin-bottom:6px;}
+	.wrap[data-preset="portrait"] .info-line-1 span,.wrap[data-preset="portrait"] .info-line-2 span{display:inline-block;margin-right:24px;}
+	.wrap[data-preset="portrait"] .info-line-2 input,.wrap[data-preset="portrait"] .info-line-1 input{font-size:16px;width:120px;}
+	.wrap[data-preset="portrait"] .main-box{display:block;border:1px solid #000;min-height:auto;padding:14px 16px;}
+	.wrap[data-preset="portrait"] .left-col{border-right:none;padding:0;font-size:16px;line-height:1.8;}
+	.wrap[data-preset="portrait"] .left-col > div:first-child{border-bottom:1px solid #000;padding-bottom:8px;margin-bottom:10px;}
+	.wrap[data-preset="portrait"] .left-col input{font-size:16px !important;margin-top:2px !important;}
+	.wrap[data-preset="portrait"] .right-col{padding:0;font-size:18px;line-height:1.9;}
+	.wrap[data-preset="portrait"] .r-mark{font-size:34px;margin-bottom:4px;}
+	.wrap[data-preset="portrait"] .sign-row{justify-content:flex-start;gap:30px;font-size:16px;padding:8px 0 0;}
+	.wrap[data-preset="portrait"] .signature-field{font-size:30px;}
+	.wrap[data-preset="portrait"] .bottom-note{border-top:none;padding:0;font-size:14px;margin-top:8px;}
+	.wrap[data-preset="portrait"] .bottom-bar{display:none;}
 	@media(max-width:1420px){body{min-width:1420px;}.preset-tools,.export-tools{margin-left:30px;}}
     </style>
 </head>
@@ -159,6 +199,7 @@ body{background:#eee;padding:20px;}
     <select class="preset-select" id="presetSelect">
         <option value="classic">经典处方</option>
         <option value="ledger">极简账册</option>
+        <option value="portrait">门诊竖版</option>
     </select>
     <span class="preset-description" id="presetDescription">经典黑白分栏版式</span>
 </div>
@@ -192,15 +233,21 @@ body{background:#eee;padding:20px;}
         <div class="title-right">
             <span>处方笺</span>
             <div class="box-right">底方</div>
+            <span class="seal-mark portrait-only" contenteditable="true">普</span>
+            <span class="fee-tag portrait-only" contenteditable="true">自费病人</span>
         </div>
     </div>
     <div class="row1">
         <div class="left-item">定点医疗机构编码：<span contenteditable>1234567890</span></div>
         <div class="right-item">就诊类型：<span contenteditable>普通门诊</span></div>
+        <div class="left-item portrait-only" style="display:none">门诊号：<span contenteditable>0000123456</span></div>
+        <div class="right-item portrait-only" style="display:none">挂号流水号：<span contenteditable>20260001</span></div>
     </div>
     <div class="row2">
         <div class="left-item">处方编号：<span contenteditable>1234567890</span></div>
         <div class="right-item">费别：<span contenteditable>自费</span></div>
+        <div class="left-item portrait-only" style="display:none">地址、电话：<span contenteditable>××路×号 0000-00000000</span></div>
+        <div class="right-item portrait-only" style="display:none">日期：<span contenteditable>0001-00-00</span></div>
     </div>
     <!--科室、药房、身份自动均分间距撑满整行-->
     <div class="info-line-1">
@@ -243,6 +290,29 @@ body{background:#eee;padding:20px;}
         <span>发药 <input value="赵小丽"></span>
         <span>金额 <input value="1234"></span>
     </div>
+
+    <!--竖版专用：以下空白、双栏页脚、总费用与取药说明。横版预设下隐藏。-->
+    <hr class="dashed-divider portrait-only" style="display:none">
+    <div class="portrait-note portrait-only" style="display:none">以下空白</div>
+    <div class="portrait-footer portrait-only" style="display:none">
+        <div class="pf-col">
+            <div class="pf-row"><span>药费 <input value=""></span></div>
+            <div class="pf-row"><span>注射费 <input value=""></span></div>
+            <div class="pf-row"><span>收费 <input value=""></span></div>
+            <div class="pf-row"><span>审核 <input value="王小明"></span></div>
+            <div class="pf-row"><span>调配 <input value="李小红"></span></div>
+        </div>
+        <div class="pf-col">
+            <div class="pf-row"><span>医师 <span class="signature-field" style="font-size:26px">李四</span></span></div>
+            <div class="pf-row"><span>核对 <input value="张小刚"></span></div>
+            <div class="pf-row"><span>发药 <input value="赵小丽"></span></div>
+        </div>
+    </div>
+    <div class="portrait-summary portrait-only" style="display:none">
+        <span>总费用（元）<input value="1234.00"></span>
+        <span>价目 <input value=""></span>
+    </div>
+    <div class="portrait-note portrait-only" style="display:none">取药须知：请核对药品名称、数量及用法用量；如有疑问请咨询药师。本处方当日有效。</div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
@@ -269,7 +339,8 @@ const signatureFontSelect=document.getElementById('signatureFontSelect');
 const signatureFontDescription=document.getElementById('signatureFontDescription');
 const presets={
     classic:'经典黑白分栏版式',
-    ledger:'黑白细线与信息层级'
+    ledger:'黑白细线与信息层级',
+    portrait:'门诊竖版单栏排版'
 };
 const signatureFontPresets={
     kaiti:{label:'通用楷体展示',font:'36px "KaiTi"'},
