@@ -1,0 +1,49 @@
+name: 💡 改进建议
+description: 提出新功能或对现有功能的改进想法
+title: "[建议] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢你为 Rx Generator 提出建议！请尽量清晰地描述你的想法。
+        本项目仅用于排版与 UI 演示，不涉及真实医疗文书效力，请勿建议增加对应真实医疗机构或可伪造签名/印章的功能。
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 当前的问题 / 你想解决的事情
+      description: 你觉得现在哪里不够好？或者遇到了什么场景没法满足？
+      placeholder: 例如：导出 PDF 时希望可以自定义纸张大小……
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: 你的建议方案
+      description: 你希望我们怎么做？可以是大概的想法，不必是完整方案。
+      placeholder: 例如：在导出面板增加一个 A4/A5/信纸 的下拉选择……
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 你考虑过的其他方案
+      placeholder: 可选
+
+  - type: textarea
+    id: context
+    attributes:
+      label: 补充信息
+      description: 截图、参考链接、其它背景信息等。
+      placeholder: 可选
+
+  - type: checkboxes
+    id: disclaimer
+    attributes:
+      label: 项目声明确认
+      options:
+        - label: 我已了解本项目仅用于排版/样式演示，不具备真实医疗文书或诊疗效力，且我的建议不涉及复刻真实医疗机构、仿制签名或印章。
+          required: true

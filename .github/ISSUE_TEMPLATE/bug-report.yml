@@ -1,0 +1,49 @@
+name: 🐛 问题反馈
+description: 报告使用中遇到的问题
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 问题描述
+      description: 出现了什么问题？预期行为是什么？
+      placeholder: 请尽量详细描述。
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 你是如何触发这个问题的？
+      placeholder: |
+        1. 打开 index.html
+        2. 选择「门诊竖版」预设
+        3. 点击导出 PDF
+        4. ……
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: 浏览器与系统
+      placeholder: 例如 Chrome 125 / Windows 11
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: 截图 / 录屏
+      description: 如有，请附上以帮助定位问题。
+      placeholder: 可选
+
+  - type: checkboxes
+    id: disclaimer
+    attributes:
+      label: 项目声明确认
+      options:
+        - label: 我已了解本项目仅用于排版/样式演示，不具备真实医疗文书或诊疗效力。
+          required: true
