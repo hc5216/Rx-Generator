@@ -9,7 +9,8 @@
     @font-face{font-family:"Long Cang";src:url("assets/fonts/long-cang/LongCang-Regular.ttf") format("truetype");font-display:swap;}
     @font-face{font-family:"Zhi Mang Xing";src:url("assets/fonts/zhi-mang-xing/ZhiMangXing-Regular.ttf") format("truetype");font-display:swap;}
     @font-face{font-family:"Liu Jian Mao Cao";src:url("assets/fonts/liu-jian-mao-cao/LiuJianMaoCao-Regular.ttf") format("truetype");font-display:swap;}
-    *{box-sizing:border-box;margin:0;padding:0;font-family:"SimSun", "宋体",serif;}
+    /* 符号回退字体链：宋体缺 ℞/◀/★ 等符号时依次回退，避免显示为豆腐块 */
+    *{box-sizing:border-box;margin:0;padding:0;font-family:"SimSun","宋体","Segoe UI Symbol","Noto Sans Symbols 2","Noto Sans Symbols","Arial Unicode MS","Microsoft YaHei",serif;}
 body{background:linear-gradient(135deg,#b8d4f5 0%,#ffffff 50%,#f5c8dc 100%);padding:20px;user-select:none;-webkit-user-select:none;min-height:100vh;}
 /* 仅可编辑区域允许选中复制 */
 [contenteditable="true"],input,textarea{user-select:text;-webkit-user-select:text;}
@@ -32,22 +33,25 @@ body{background:linear-gradient(135deg,#b8d4f5 0%,#ffffff 50%,#f5c8dc 100%);padd
 .main-box{border:2px solid #000;display:grid;grid-template-columns:240px 1fr;min-height:480px;}
 .left-col{border-right:2px solid #000;padding:16px;font-size:22px;line-height:2.2;display:flex;flex-direction:column;justify-content:space-between;}
 .right-col{padding:20px;font-size:24px;line-height:2.4;display:flex;flex-direction:column;justify-content:space-between;}
-.r-mark{font-size:60px;font-style:italic;margin-bottom:8px;}
+/* ℞（U+211E）不在宋体字库内，符号字体优先确保正常渲染 */
+.r-mark{font-size:60px;font-style:italic;margin-bottom:8px;font-family:"Segoe UI Symbol","Noto Sans Symbols 2","Noto Sans Symbols","Arial Unicode MS","SimSun","宋体",serif;}
 .drug-text{border:none;outline:none;display:block;}
 .bottom-note{border-top:2px solid #000;padding:16px;font-size:18px;line-height:1.6;}
     .sign-row{display:flex;justify-content:flex-end;gap:80px;padding:10px 0;font-size:20px;align-items:center;}
     .sign-name-wrap{display:inline-flex;align-items:center;}
     .sig-wrap{position:relative;display:inline-block;}
-    .signature-field{display:inline-block;max-width:290px;overflow-wrap:anywhere;vertical-align:middle;font-family:"KaiTi","STKaiti","SimKai",cursive;font-size:36px;line-height:1.25;}
-    .signature-field[data-font="ma-shan-zheng"]{font-family:"Ma Shan Zheng","KaiTi",cursive;}
-    .signature-field[data-font="long-cang"]{font-family:"Long Cang","KaiTi",cursive;}
-    .signature-field[data-font="zhi-mang-xing"]{font-family:"Zhi Mang Xing","KaiTi",cursive;}
-    .signature-field[data-font="liu-jian-mao-cao"]{font-family:"Liu Jian Mao Cao","KaiTi",cursive;}
-    /* 公章：单圆圈、楷体、200px、绝对定位居中覆盖在签名上、文字可直接点击编辑 */
+    .signature-field{display:inline-block;max-width:290px;overflow-wrap:anywhere;vertical-align:middle;font-family:"KaiTi","STKaiti","SimKai","Segoe UI Symbol","Noto Sans Symbols 2",cursive;font-size:36px;line-height:1.25;}
+    .signature-field[data-font="ma-shan-zheng"]{font-family:"Ma Shan Zheng","Segoe UI Symbol","Noto Sans Symbols 2","KaiTi",cursive;}
+    .signature-field[data-font="long-cang"]{font-family:"Long Cang","Segoe UI Symbol","Noto Sans Symbols 2","KaiTi",cursive;}
+    .signature-field[data-font="zhi-mang-xing"]{font-family:"Zhi Mang Xing","Segoe UI Symbol","Noto Sans Symbols 2","KaiTi",cursive;}
+    .signature-field[data-font="liu-jian-mao-cao"]{font-family:"Liu Jian Mao Cao","Segoe UI Symbol","Noto Sans Symbols 2","KaiTi",cursive;}
+    /* 公章：单圆圈、楷体、200px、绝对定位居中覆盖在签名上；
+       SVG <text> 不支持 contenteditable，点击公章文字后在原位弹出输入框编辑 */
     .seal-container{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-4deg);opacity:.9;z-index:5;display:none;}
     .seal-container svg{display:block;overflow:visible;}
-    .seal-container text[contenteditable="true"]{cursor:text;user-select:text;-webkit-user-select:text;}
-    .seal-container text[contenteditable="true"]:focus{outline:none;}
+    .seal-container text.seal-editable{cursor:text;}
+    .seal-container text.seal-editable:hover{fill:#e04848;}
+    .seal-editor{position:fixed;z-index:1001;border:1px dashed #d42b2b;border-radius:3px;background:rgba(255,255,255,.92);color:#d42b2b;font-family:"KaiTi","STKaiti","SimKai","Segoe UI Symbol",serif;text-align:center;letter-spacing:2px;outline:none;padding:0 2px;margin:0;box-shadow:0 1px 5px rgba(0,0,0,.18);}
 .bottom-bar{margin-top:20px;display:flex;justify-content:space-between;padding:0 10px;font-size:18px;gap:80px;}
 .bottom-bar span{display:flex;align-items:center;gap:12px;}
 .bottom-bar input{border:none;border-bottom:1px solid #000;width:110px;font-size:18px;padding:2px;outline:none;}
@@ -271,7 +275,7 @@ body{background:linear-gradient(135deg,#b8d4f5 0%,#ffffff 50%,#f5c8dc 100%);padd
         <div class="right-col">
             <div>
                 <div class="r-mark">℞</div>
-                <div class="drug-text" contenteditable="true">[1]戊酸雌二醇片 21粒/板/盒 BID.口服</div>
+                <div class="drug-text" contenteditable="true">①戊酸雌二醇片 21粒/板/盒 BID.口服</div>
             </div>
             <div class="sign-row">
                 <span class="sign-name-wrap">医师签字：
@@ -283,11 +287,11 @@ body{background:linear-gradient(135deg,#b8d4f5 0%,#ffffff 50%,#f5c8dc 100%);padd
                                     <path id="sealTopArc" d="M 22,100 A 78,78 0 0,1 178,100" fill="none"/>
                                 </defs>
                                 <circle cx="100" cy="100" r="92" fill="none" stroke="#d42b2b" stroke-width="4.5" pointer-events="none"/>
-                                <text fill="#d42b2b" font-size="21" font-family="KaiTi,STKaiti,SimKai,cursive" letter-spacing="3" contenteditable="true" spellcheck="false" pointer-events="all">
+                                <text class="seal-editable" fill="#d42b2b" font-size="21" font-family="KaiTi,STKaiti,SimKai,'Segoe UI Symbol','Noto Sans Symbols 2',cursive" letter-spacing="3" pointer-events="all" title="点击编辑">
                                     <textPath href="#sealTopArc" startOffset="50%" text-anchor="middle">A省精神卫生中心</textPath>
                                 </text>
                                 <text x="100" y="115" text-anchor="middle" fill="#d42b2b" font-size="48" pointer-events="none">★</text>
-                                <text x="100" y="155" text-anchor="middle" fill="#d42b2b" font-size="19" font-family="KaiTi,STKaiti,SimKai,cursive" letter-spacing="5" contenteditable="true" spellcheck="false" pointer-events="all">处方专用章</text>
+                                <text class="seal-editable" x="100" y="155" text-anchor="middle" fill="#d42b2b" font-size="19" font-family="KaiTi,STKaiti,SimKai,'Segoe UI Symbol','Noto Sans Symbols 2',cursive" letter-spacing="5" pointer-events="all" title="点击编辑">处方专用章</text>
                             </svg>
                         </span>
                     </span>
@@ -337,18 +341,18 @@ body{background:linear-gradient(135deg,#b8d4f5 0%,#ffffff 50%,#f5c8dc 100%);padd
             <button class="side-panel-btn" id="btnFillDemo">填充示例数据</button>
             <button class="side-panel-btn" id="btnClearAll">清空所有内容</button>
             <button class="side-panel-btn" id="btnSeal">生成公章</button>
-            <div class="side-panel-tip">点击生成/移除示例公章；公章上的文字可直接点击编辑，仅作版式展示无法律效力</div>
+            <div class="side-panel-tip">点击生成/移除示例公章；点击公章上的文字即可原位修改（回车确认、Esc 取消），仅作版式展示无法律效力</div>
         </div>
         <div class="side-panel-section">
             <h4>药品快捷输入</h4>
-            <button class="side-panel-btn" data-drug="[1]戊酸雌二醇片 21粒/板/盒 BID.口服">戊酸雌二醇片</button>
-            <button class="side-panel-btn" data-drug="[1]螺内酯片 20mg×100片 TID.口服">螺内酯片</button>
-            <button class="side-panel-btn" data-drug="[1]醋酸环丙孕酮片 50mg×50片 QD.口服">醋酸环丙孕酮片</button>
-            <button class="side-panel-btn" data-drug="[1]黄体酮软胶囊 100mg×30粒 BID.口服">黄体酮软胶囊</button>
-            <button class="side-panel-btn" data-drug="[1]普瑞巴林胶囊 75mg×32粒 BID.口服">普瑞巴林胶囊</button>
-            <button class="side-panel-btn" data-drug="[1]盐酸美金刚片 10mg×60片 QD.口服">盐酸美金刚片</button>
-            <button class="side-panel-btn" data-drug="[1]盐酸金刚烷胺片 0.1g×100片 QD.口服">盐酸金刚烷胺片</button>
-            <button class="side-panel-btn" data-drug="[1]加巴喷丁胶囊 0.3g×10粒×盒 BID.口服">加巴喷丁胶囊</button>
+            <button class="side-panel-btn" data-drug="①戊酸雌二醇片 21粒/板/盒 BID.口服">戊酸雌二醇片</button>
+            <button class="side-panel-btn" data-drug="①螺内酯片 20mg×100片 TID.口服">螺内酯片</button>
+            <button class="side-panel-btn" data-drug="①醋酸环丙孕酮片 50mg×50片 QD.口服">醋酸环丙孕酮片</button>
+            <button class="side-panel-btn" data-drug="①黄体酮软胶囊 100mg×30粒 BID.口服">黄体酮软胶囊</button>
+            <button class="side-panel-btn" data-drug="①普瑞巴林胶囊 75mg×32粒 BID.口服">普瑞巴林胶囊</button>
+            <button class="side-panel-btn" data-drug="①盐酸美金刚片 10mg×60片 QD.口服">盐酸美金刚片</button>
+            <button class="side-panel-btn" data-drug="①盐酸金刚烷胺片 0.1g×100片 QD.口服">盐酸金刚烷胺片</button>
+            <button class="side-panel-btn" data-drug="①加巴喷丁胶囊 0.3g×10粒×盒 BID.口服">加巴喷丁胶囊</button>
             <div class="side-panel-tip">点击药品名称可快速填入处方栏</div>
         </div>
         <div class="side-panel-section">
@@ -527,11 +531,47 @@ function resetSealText(){
     sealTopText.textContent='A省精神卫生中心';
     sealBottomText.textContent='处方专用章';
 }
-// 公章文字点击即可编辑（contenteditable），禁止回车换行
-sealContainer.querySelectorAll('text[contenteditable="true"]').forEach(el=>{
-    el.addEventListener('keydown',e=>{
-        if(e.key==='Enter'){e.preventDefault();e.target.blur();}
+// 公章文字编辑：SVG <text> 不支持 contenteditable，点击后弹出同位置输入框编辑
+let sealEditor=null;
+function commitSealEditor(){
+    if(!sealEditor) return;
+    const editor=sealEditor;
+    sealEditor=null;
+    const value=editor.value.trim();
+    if(editor._textPath) editor._textPath.textContent=value;
+    else editor._svgText.textContent=value;
+    editor._svgText.style.visibility='';
+    editor.remove();
+}
+function beginSealEdit(svgText,textPath){
+    if(sealEditor) commitSealEditor();
+    const rect=svgText.getBoundingClientRect();
+    if(!rect.width&&!rect.height) return;
+    const original=(textPath?textPath.textContent:svgText.textContent).trim();
+    const editor=document.createElement('input');
+    editor.type='text';
+    editor.className='seal-editor';
+    editor.value=original;
+    editor._svgText=svgText;
+    editor._textPath=textPath||null;
+    editor.style.left=`${rect.left}px`;
+    editor.style.top=`${rect.top}px`;
+    editor.style.width=`${Math.max(rect.width,150)}px`;
+    editor.style.height=`${rect.height}px`;
+    editor.style.fontSize=`${svgText.getAttribute('font-size')||'20'}px`;
+    editor.addEventListener('keydown',e=>{
+        if(e.key==='Enter'){e.preventDefault();commitSealEditor();}
+        else if(e.key==='Escape'){editor.value=original;commitSealEditor();}
     });
+    editor.addEventListener('blur',()=>commitSealEditor());
+    svgText.style.visibility='hidden';
+    document.body.appendChild(editor);
+    editor.focus();
+    editor.select();
+    sealEditor=editor;
+}
+sealContainer.querySelectorAll('text.seal-editable').forEach(el=>{
+    el.addEventListener('click',()=>beginSealEdit(el,el.querySelector('textPath')));
 });
 document.getElementById('btnFillDemo').addEventListener('click',()=>{
     document.querySelector('.title-name').textContent='A省精神卫生中心';
@@ -552,7 +592,7 @@ document.getElementById('btnFillDemo').addEventListener('click',()=>{
     const diagInput=document.querySelector('.left-col input');
     if(diagInput) diagInput.value='易性症';
     const drugText=document.querySelector('.drug-text');
-    if(drugText) drugText.textContent='[1]戊酸雌二醇片 21粒/板/盒 BID.口服';
+    if(drugText) drugText.textContent='①戊酸雌二醇片 21粒/板/盒 BID.口服';
     const sigField=document.getElementById('signatureField');
     if(sigField) sigField.textContent='李四';
     const signEditable=document.querySelectorAll('.sign-row span[contenteditable]');
