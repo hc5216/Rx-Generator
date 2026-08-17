@@ -284,7 +284,8 @@ body{background:linear-gradient(135deg,#b8d4f5 0%,#ffffff 50%,#f5c8dc 100%);padd
                         <span class="seal-container" id="sealContainer">
                             <svg width="200" height="200" viewBox="0 0 200 200">
                                 <defs>
-                                    <path id="sealTopArc" d="M 22,100 A 78,78 0 0,1 178,100" fill="none"/>
+                                    <!-- 基线弧 r=66：21px 字形朝外顶部达 ~84.5，位于圆环内缘 89.75 之内，不压线 -->
+                                    <path id="sealTopArc" d="M 34,100 A 66,66 0 0,1 166,100" fill="none"/>
                                 </defs>
                                 <circle cx="100" cy="100" r="92" fill="none" stroke="#d42b2b" stroke-width="4.5" pointer-events="none"/>
                                 <text class="seal-editable" fill="#d42b2b" font-size="21" font-family="KaiTi,STKaiti,SimKai,'Segoe UI Symbol','Noto Sans Symbols 2',cursive" letter-spacing="3" pointer-events="all" title="点击编辑">
@@ -530,7 +531,18 @@ btnSeal.addEventListener('click',()=>{
 function resetSealText(){
     sealTopText.textContent='A省精神卫生中心';
     sealBottomText.textContent='处方专用章';
+    layoutSealArcText();
 }
+// 弧顶文字自动适配：限制在 ±75°（150° 弧段）内，超出则按字数缩小字号，避免压到圆环或排满半圆
+function layoutSealArcText(){
+    const arcText=sealTopText.closest('text');
+    const count=[...sealTopText.textContent].length;
+    if(!count){arcText.setAttribute('font-size','21');return;}
+    const radius=66,spacing=3,maxArc=radius*Math.PI*150/180;
+    const size=Math.max(11,Math.min(21,Math.floor(maxArc/count-spacing)));
+    arcText.setAttribute('font-size',String(size));
+}
+layoutSealArcText();
 // 公章文字编辑：SVG <text> 不支持 contenteditable，点击后弹出同位置输入框编辑
 let sealEditor=null;
 function commitSealEditor(){
@@ -538,7 +550,7 @@ function commitSealEditor(){
     const editor=sealEditor;
     sealEditor=null;
     const value=editor.value.trim();
-    if(editor._textPath) editor._textPath.textContent=value;
+    if(editor._textPath){editor._textPath.textContent=value;layoutSealArcText();}
     else editor._svgText.textContent=value;
     editor._svgText.style.visibility='';
     editor.remove();
