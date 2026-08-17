@@ -416,6 +416,12 @@ async function exportPrescription(format){
     exportToggle.textContent='正在导出…';
     setExportMenu(false);
 
+    //导出前临时取消 .wrap 的居中 auto 外边距：html-to-image 会克隆节点原位渲染，
+    //居中的 auto margin 会让绝对定位子元素（标题、审核栏等）相对画布整体偏移，
+    //造成左侧空白、右侧内容被裁切。导出完成后立即恢复原值。
+    const savedMargin=exportTarget.style.margin;
+    exportTarget.style.margin='0';
+
     const options={backgroundColor:'#ffffff',pixelRatio:2,cacheBust:true};
     try{
         if(format==='jpg'){
@@ -445,6 +451,7 @@ async function exportPrescription(format){
         console.error('导出失败：',error);
         alert('导出失败，请稍后重试。');
     }finally{
+        exportTarget.style.margin=savedMargin;
         exportTools.classList.remove('is-exporting');
         exportOptions.forEach(button=>button.disabled=false);
         exportToggle.disabled=false;
