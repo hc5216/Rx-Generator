@@ -5,59 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>处方笺编辑器</title>
     <style>
-	@font-face{font-family:"Ma Shan Zheng";src:url("assets/fonts/ma-shan-zheng/MaShanZheng-Regular.ttf") format("truetype");font-display:swap;}
-	@font-face{font-family:"Long Cang";src:url("assets/fonts/long-cang/LongCang-Regular.ttf") format("truetype");font-display:swap;}
-	@font-face{font-family:"Zhi Mang Xing";src:url("assets/fonts/zhi-mang-xing/ZhiMangXing-Regular.ttf") format("truetype");font-display:swap;}
-	@font-face{font-family:"Liu Jian Mao Cao";src:url("assets/fonts/liu-jian-mao-cao/LiuJianMaoCao-Regular.ttf") format("truetype");font-display:swap;}
-
-	*{box-sizing:border-box;margin:0;padding:0;font-family:"SimSun", "宋体",serif;}
-body{background:#eee;padding:20px;}
+    @font-face{font-family:"Ma Shan Zheng";src:url("assets/fonts/ma-shan-zheng/MaShanZheng-Regular.ttf") format("truetype");font-display:swap;}
+    @font-face{font-family:"Long Cang";src:url("assets/fonts/long-cang/LongCang-Regular.ttf") format("truetype");font-display:swap;}
+    @font-face{font-family:"Zhi Mang Xing";src:url("assets/fonts/zhi-mang-xing/ZhiMangXing-Regular.ttf") format("truetype");font-display:swap;}
+    @font-face{font-family:"Liu Jian Mao Cao";src:url("assets/fonts/liu-jian-mao-cao/LiuJianMaoCao-Regular.ttf") format("truetype");font-display:swap;}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:"SimSun", "宋体",serif;}
+body{background:linear-gradient(135deg,#b8d4f5 0%,#ffffff 50%,#f5c8dc 100%);padding:20px;user-select:none;-webkit-user-select:none;min-height:100vh;}
+/* 仅可编辑区域允许选中复制 */
+[contenteditable="true"],input,textarea{user-select:text;-webkit-user-select:text;}
 .wrap{width:1360px;margin:0 auto;background:#fff;padding:30px;box-shadow:0 2px 8px #ccc;}
-/*标题字号36px，下方间距55px保持不变*/
 .top-title{display:flex;justify-content:center;align-items:center;position:relative;font-size:36px;font-weight:bold;letter-spacing:6px;margin-bottom:55px;}
 .top-title .title-name{position:absolute;left:50%;transform:translateX(-50%);}
 .top-title .title-right{position:absolute;right:60px;display:flex;align-items:center;gap:4px;}
 .top-title .box-right{border:2px solid #333;padding:4px 12px;font-size:28px;letter-spacing:2px;}
-
-/*第一行：定点医疗机构编码【居中】，就诊类型【右对齐】*/
 .row1{display:flex;justify-content:space-between;position:relative;font-size:18px;margin-bottom:10px;padding:0 60px;}
 .row1 .left-item{position:absolute;left:50%;transform:translateX(-50%);}
 .row1 .right-item{margin-left:auto;}
-
-/*第二行：处方编号【居中】，费别【右对齐】*/
 .row2{display:flex;justify-content:space-between;position:relative;font-size:18px;margin-bottom:24px;padding:0 60px;}
 .row2 .left-item{position:absolute;left:50%;transform:translateX(-50%);}
 .row2 .right-item{margin-left:auto;}
-
-/*科室、药房、身份 两端对齐撑满整行*/
 .info-line-1{display:flex;justify-content:space-between;font-size:20px;padding:0 10px;margin-bottom:20px;}
 .info-line-1 span{display:flex;align-items:center;}
-
-/*姓名信息行保持原样靠左*/
 .info-line-2{display:flex;gap:60px;font-size:20px;padding:0 10px;margin-bottom:20px;}
 .info-line-2 span{display:flex;align-items:center;}
-
 .info-line-2 input,.info-line-1 input{border:none;font-size:20px;width:140px;outline:none;padding:2px;}
-/*主处方框*/
 .main-box{border:2px solid #000;display:grid;grid-template-columns:240px 1fr;min-height:480px;}
 .left-col{border-right:2px solid #000;padding:16px;font-size:22px;line-height:2.2;display:flex;flex-direction:column;justify-content:space-between;}
 .right-col{padding:20px;font-size:24px;line-height:2.4;display:flex;flex-direction:column;justify-content:space-between;}
 .r-mark{font-size:60px;font-style:italic;margin-bottom:8px;}
 .drug-text{border:none;outline:none;display:block;}
 .bottom-note{border-top:2px solid #000;padding:16px;font-size:18px;line-height:1.6;}
-	.sign-row{display:flex;justify-content:flex-end;gap:80px;padding:10px 0;font-size:20px;align-items:center;}
-	.signature-field{display:inline-block;max-width:290px;overflow-wrap:anywhere;vertical-align:middle;font-family:"KaiTi","STKaiti","SimKai",cursive;font-size:36px;line-height:1.25;}
-	.signature-field[data-font="ma-shan-zheng"]{font-family:"Ma Shan Zheng","KaiTi",cursive;}
-	.signature-field[data-font="long-cang"]{font-family:"Long Cang","KaiTi",cursive;}
-	.signature-field[data-font="zhi-mang-xing"]{font-family:"Zhi Mang Xing","KaiTi",cursive;}
-	.signature-field[data-font="liu-jian-mao-cao"]{font-family:"Liu Jian Mao Cao","KaiTi",cursive;}
-	/*底部审核栏，加大每项之间间距，保留下划线*/
+    .sign-row{display:flex;justify-content:flex-end;gap:80px;padding:10px 0;font-size:20px;align-items:center;}
+    .sign-name-wrap{display:inline-flex;align-items:center;}
+    .sig-wrap{position:relative;display:inline-block;}
+    .signature-field{display:inline-block;max-width:290px;overflow-wrap:anywhere;vertical-align:middle;font-family:"KaiTi","STKaiti","SimKai",cursive;font-size:36px;line-height:1.25;}
+    .signature-field[data-font="ma-shan-zheng"]{font-family:"Ma Shan Zheng","KaiTi",cursive;}
+    .signature-field[data-font="long-cang"]{font-family:"Long Cang","KaiTi",cursive;}
+    .signature-field[data-font="zhi-mang-xing"]{font-family:"Zhi Mang Xing","KaiTi",cursive;}
+    .signature-field[data-font="liu-jian-mao-cao"]{font-family:"Liu Jian Mao Cao","KaiTi",cursive;}
+    /* 公章：单圆圈、楷体、200px、绝对定位居中覆盖在签名上、文字可直接点击编辑 */
+    .seal-container{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-4deg);opacity:.9;z-index:5;display:none;}
+    .seal-container svg{display:block;overflow:visible;}
+    .seal-container text[contenteditable="true"]{cursor:text;user-select:text;-webkit-user-select:text;}
+    .seal-container text[contenteditable="true"]:focus{outline:none;}
 .bottom-bar{margin-top:20px;display:flex;justify-content:space-between;padding:0 10px;font-size:18px;gap:80px;}
 .bottom-bar span{display:flex;align-items:center;gap:12px;}
 .bottom-bar input{border:none;border-bottom:1px solid #000;width:110px;font-size:18px;padding:2px;outline:none;}
 [contenteditable="true"]:focus{background:transparent;outline:none;border:none;}
-
-/*免责弹窗样式*/
 .modal-mask{
     position:fixed;
     top:0;
@@ -86,6 +80,8 @@ body{background:#eee;padding:20px;}
     line-height:1.8;
     color:#333;
     margin-bottom:24px;
+    user-select:text;
+    -webkit-user-select:text;
 }
 .modal-btn{
     width:100%;
@@ -97,103 +93,110 @@ body{background:#eee;padding:20px;}
     border:none;
     border-radius:4px;
 }
-	.modal-btn:hover{
-	    background:#94cdee;
-	}
-
-	.export-tools{width:1360px;margin:0 auto 16px;display:flex;justify-content:flex-end;position:relative;z-index:10;}
-	.preset-tools{width:1360px;margin:0 auto 12px;display:flex;justify-content:flex-end;align-items:center;gap:10px;}
-	.signature-tools{margin-bottom:16px;}
-	.preset-tools label{font-size:16px;font-weight:bold;}
-	.preset-select{min-width:170px;padding:8px 34px 8px 10px;background:#fff;border:1px solid #76bde1;border-radius:4px;font-size:15px;cursor:pointer;}
-	.preset-description{min-width:250px;color:#555;font-size:14px;}
-	.export-toggle{padding:9px 20px;background:#b8e0f8;color:#000;border:1px solid #76bde1;border-radius:4px;font-size:16px;cursor:pointer;}
-	.export-toggle:hover,.export-toggle[aria-expanded="true"]{background:#94cdee;}
-	.export-menu{position:absolute;top:calc(100% + 6px);right:0;display:none;min-width:190px;padding:6px;background:#fff;border:1px solid #ccc;border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.16);}
-	.export-menu.is-open{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
-	.export-option{padding:8px 12px;background:#fff;border:1px solid #ccc;border-radius:3px;font-size:14px;cursor:pointer;}
-	.export-option:hover{background:#eef8fd;border-color:#76bde1;}
-	.export-tools.is-exporting button{cursor:wait;opacity:.7;}
-	.export-tools button:disabled{cursor:not-allowed;}
-
-	/* 原创通用视觉预设，不对应任何真实医疗机构或正式文书。 */
-	.wrap[data-preset="ledger"]{background:#fcfcfa;box-shadow:0 2px 7px #bdbdb9;color:#1e1e1e;}
-	.wrap[data-preset="ledger"] .top-title{justify-content:flex-start;padding-bottom:13px;border-bottom:3px double #222;letter-spacing:2px;margin-bottom:32px;}
-	.wrap[data-preset="ledger"] .top-title .title-name{position:static;transform:none;}
-	.wrap[data-preset="ledger"] .top-title .title-right{right:0;}
-	.wrap[data-preset="ledger"] .top-title .box-right{border-width:1px;font-size:21px;padding:5px 10px;}
-	.wrap[data-preset="ledger"] .row1,.wrap[data-preset="ledger"] .row2{padding:0 10px;border-bottom:1px solid #aaa;padding-bottom:9px;margin-bottom:9px;}
-	.wrap[data-preset="ledger"] .info-line-1,.wrap[data-preset="ledger"] .info-line-2{padding:8px 10px;margin-bottom:8px;border-bottom:1px solid #aaa;}
-	.wrap[data-preset="ledger"] .main-box{border:1px solid #222;grid-template-columns:260px 1fr;}
-	.wrap[data-preset="ledger"] .left-col{border-right:1px solid #222;}
-	.wrap[data-preset="ledger"] .bottom-note{border-top:1px solid #222;}
-	.wrap[data-preset="ledger"] .bottom-bar{padding:12px 10px;border-top:3px double #222;}
-	.wrap[data-preset="ledger"] .bottom-bar input{border-bottom-color:#333;}
-
-	/* 竖版专用字段：默认隐藏，仅在竖版预设中显示。原创通用门诊处方版式演示。 */
-	.portrait-only{display:none !important;}
-	.seal-mark{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border:2px solid #c0392b;border-radius:50%;color:#c0392b;font-size:20px;font-weight:bold;letter-spacing:0;}
-	.fee-tag{border:1px solid #444;padding:2px 8px;font-size:16px;}
-	.dashed-divider{border:none;border-top:1px dashed #888;margin:18px 0;}
-	.portrait-footer{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #000;margin-top:14px;font-size:17px;}
-	.portrait-footer .pf-col{padding:10px 14px;}
-	.portrait-footer .pf-col:first-child{border-right:1px solid #000;}
-	.portrait-footer .pf-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;}
-	.portrait-footer .pf-row span{display:flex;align-items:center;gap:8px;}
-	.portrait-footer input{border:none;border-bottom:1px solid #000;font-size:17px;padding:1px 2px;outline:none;min-width:90px;}
-	.portrait-summary{display:flex;justify-content:space-between;align-items:center;border:1px solid #000;border-top:none;padding:8px 14px;font-size:17px;}
-	.portrait-note{margin-top:10px;font-size:15px;color:#333;line-height:1.6;}
-
-	/* 竖版（门诊）预设：纵向单栏排版。 */
-	.wrap[data-preset="portrait"]{width:760px;padding:26px 30px;}
-	.wrap[data-preset="portrait"] .top-title{font-size:30px;letter-spacing:4px;margin-bottom:10px;}
-	.wrap[data-preset="portrait"] .top-title .title-name{position:static;transform:none;}
-	.wrap[data-preset="portrait"] .top-title .title-right{right:0;gap:10px;align-items:center;}
-	.wrap[data-preset="portrait"] .top-title .box-right{border:none;padding:0;font-size:18px;}
-	.wrap[data-preset="portrait"] .portrait-only{display:block !important;}
-	.wrap[data-preset="portrait"] .top-title .title-right .seal-mark,
-	.wrap[data-preset="portrait"] .top-title .title-right .fee-tag{display:inline-flex !important;}
-	.wrap[data-preset="portrait"] .row1,.wrap[data-preset="portrait"] .row2{display:block;font-size:16px;margin-bottom:6px;padding:0;text-align:left;}
-	.wrap[data-preset="portrait"] .row1 .left-item,.wrap[data-preset="portrait"] .row1 .right-item,
-	.wrap[data-preset="portrait"] .row2 .left-item,.wrap[data-preset="portrait"] .row2 .right-item{position:static;margin:0;display:inline-block;margin-right:24px;transform:none;}
-	.wrap[data-preset="portrait"] .info-line-1,.wrap[data-preset="portrait"] .info-line-2{display:block;font-size:16px;padding:0;margin-bottom:6px;}
-	.wrap[data-preset="portrait"] .info-line-1 span,.wrap[data-preset="portrait"] .info-line-2 span{display:inline-block;margin-right:24px;}
-	.wrap[data-preset="portrait"] .info-line-2 input,.wrap[data-preset="portrait"] .info-line-1 input{font-size:16px;width:120px;}
-	.wrap[data-preset="portrait"] .main-box{display:block;border:1px solid #000;min-height:auto;padding:14px 16px;}
-	.wrap[data-preset="portrait"] .left-col{border-right:none;padding:0;font-size:16px;line-height:1.8;}
-	.wrap[data-preset="portrait"] .left-col > div:first-child{border-bottom:1px solid #000;padding-bottom:8px;margin-bottom:10px;}
-	.wrap[data-preset="portrait"] .left-col input{font-size:16px !important;margin-top:2px !important;}
-	.wrap[data-preset="portrait"] .right-col{padding:0;font-size:18px;line-height:1.9;}
-	.wrap[data-preset="portrait"] .r-mark{font-size:34px;margin-bottom:4px;}
-	.wrap[data-preset="portrait"] .sign-row{justify-content:flex-start;gap:30px;font-size:16px;padding:8px 0 0;}
-	.wrap[data-preset="portrait"] .signature-field{font-size:30px;}
-	.wrap[data-preset="portrait"] .bottom-note{border-top:none;padding:0;font-size:14px;margin-top:8px;}
-	.wrap[data-preset="portrait"] .bottom-bar{display:none;}
-	@media(max-width:1420px){body{min-width:1420px;}.preset-tools,.export-tools{margin-left:30px;}}
+    .modal-btn:hover{
+        background:#94cdee;
+    }
+    .export-tools{width:1360px;margin:0 auto 16px;display:flex;justify-content:flex-end;position:relative;z-index:10;}
+    .preset-tools{width:1360px;margin:0 auto 12px;display:flex;justify-content:flex-end;align-items:center;gap:10px;}
+    .signature-tools{margin-bottom:16px;}
+    .preset-tools label{font-size:16px;font-weight:bold;}
+    .preset-select{min-width:170px;padding:8px 34px 8px 10px;background:#fff;border:1px solid #76bde1;border-radius:4px;font-size:15px;cursor:pointer;}
+    .preset-description{min-width:250px;color:#555;font-size:14px;}
+    .export-toggle{padding:9px 20px;background:#b8e0f8;color:#000;border:1px solid #76bde1;border-radius:4px;font-size:16px;cursor:pointer;}
+    .export-toggle:hover,.export-toggle[aria-expanded="true"]{background:#94cdee;}
+    .export-menu{position:absolute;top:calc(100% + 6px);right:0;display:none;min-width:190px;padding:6px;background:#fff;border:1px solid #ccc;border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.16);}
+    .export-menu.is-open{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+    .export-option{padding:8px 12px;background:#fff;border:1px solid #ccc;border-radius:3px;font-size:14px;cursor:pointer;}
+    .export-option:hover{background:#eef8fd;border-color:#76bde1;}
+    .export-tools.is-exporting button{cursor:wait;opacity:.7;}
+    .export-tools button:disabled{cursor:not-allowed;}
+    .wrap[data-preset="ledger"]{background:#fcfcfa;box-shadow:0 2px 7px #bdbdb9;color:#1e1e1e;}
+    .wrap[data-preset="ledger"] .top-title{justify-content:flex-start;padding-bottom:13px;border-bottom:3px double #222;letter-spacing:2px;margin-bottom:32px;}
+    .wrap[data-preset="ledger"] .top-title .title-name{position:static;transform:none;}
+    .wrap[data-preset="ledger"] .top-title .title-right{right:0;}
+    .wrap[data-preset="ledger"] .top-title .box-right{border-width:1px;font-size:21px;padding:5px 10px;}
+    .wrap[data-preset="ledger"] .row1,.wrap[data-preset="ledger"] .row2{padding:0 10px;border-bottom:1px solid #aaa;padding-bottom:9px;margin-bottom:9px;}
+    .wrap[data-preset="ledger"] .info-line-1,.wrap[data-preset="ledger"] .info-line-2{padding:8px 10px;margin-bottom:8px;border-bottom:1px solid #aaa;}
+    .wrap[data-preset="ledger"] .main-box{border:1px solid #222;grid-template-columns:260px 1fr;}
+    .wrap[data-preset="ledger"] .left-col{border-right:1px solid #222;}
+    .wrap[data-preset="ledger"] .bottom-note{border-top:1px solid #222;}
+    .wrap[data-preset="ledger"] .bottom-bar{padding:12px 10px;border-top:3px double #222;}
+    .wrap[data-preset="ledger"] .bottom-bar input{border-bottom-color:#333;}
+    .portrait-only{display:none !important;}
+    .seal-mark{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border:2px solid #c0392b;border-radius:50%;color:#c0392b;font-size:20px;font-weight:bold;letter-spacing:0;}
+    .fee-tag{border:1px solid #444;padding:2px 8px;font-size:16px;}
+    .dashed-divider{border:none;border-top:1px dashed #888;margin:18px 0;}
+    .portrait-footer{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #000;margin-top:14px;font-size:17px;}
+    .portrait-footer .pf-col{padding:10px 14px;}
+    .portrait-footer .pf-col:first-child{border-right:1px solid #000;}
+    .portrait-footer .pf-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;}
+    .portrait-footer .pf-row span{display:flex;align-items:center;gap:8px;}
+    .portrait-footer input{border:none;border-bottom:1px solid #000;font-size:17px;padding:1px 2px;outline:none;min-width:90px;}
+    .portrait-summary{display:flex;justify-content:space-between;align-items:center;border:1px solid #000;border-top:none;padding:8px 14px;font-size:17px;}
+    .portrait-note{margin-top:10px;font-size:15px;color:#333;line-height:1.6;}
+    .wrap[data-preset="portrait"]{width:760px;padding:26px 30px;}
+    .wrap[data-preset="portrait"] .top-title{font-size:30px;letter-spacing:4px;margin-bottom:10px;}
+    .wrap[data-preset="portrait"] .top-title .title-name{position:static;transform:none;}
+    .wrap[data-preset="portrait"] .top-title .title-right{right:0;gap:10px;align-items:center;}
+    .wrap[data-preset="portrait"] .top-title .box-right{border:none;padding:0;font-size:18px;}
+    .wrap[data-preset="portrait"] .portrait-only{display:block !important;}
+    .wrap[data-preset="portrait"] .top-title .title-right .seal-mark,
+    .wrap[data-preset="portrait"] .top-title .title-right .fee-tag{display:inline-flex !important;}
+    .wrap[data-preset="portrait"] .row1,.wrap[data-preset="portrait"] .row2{display:block;font-size:16px;margin-bottom:6px;padding:0;text-align:left;}
+    .wrap[data-preset="portrait"] .row1 .left-item,.wrap[data-preset="portrait"] .row1 .right-item,
+    .wrap[data-preset="portrait"] .row2 .left-item,.wrap[data-preset="portrait"] .row2 .right-item{position:static;margin:0;display:inline-block;margin-right:24px;transform:none;}
+    .wrap[data-preset="portrait"] .info-line-1,.wrap[data-preset="portrait"] .info-line-2{display:block;font-size:16px;padding:0;margin-bottom:6px;}
+    .wrap[data-preset="portrait"] .info-line-1 span,.wrap[data-preset="portrait"] .info-line-2 span{display:inline-block;margin-right:24px;}
+    .wrap[data-preset="portrait"] .info-line-2 input,.wrap[data-preset="portrait"] .info-line-1 input{font-size:16px;width:120px;}
+    .wrap[data-preset="portrait"] .main-box{display:block;border:1px solid #000;min-height:auto;padding:14px 16px;}
+    .wrap[data-preset="portrait"] .left-col{border-right:none;padding:0;font-size:16px;line-height:1.8;}
+    .wrap[data-preset="portrait"] .left-col > div:first-child{border-bottom:1px solid #000;padding-bottom:8px;margin-bottom:10px;}
+    .wrap[data-preset="portrait"] .left-col input{font-size:16px !important;margin-top:2px !important;}
+    .wrap[data-preset="portrait"] .right-col{padding:0;font-size:18px;line-height:1.9;}
+    .wrap[data-preset="portrait"] .r-mark{font-size:34px;margin-bottom:4px;}
+    .wrap[data-preset="portrait"] .sign-row{justify-content:flex-start;gap:30px;font-size:16px;padding:8px 0 0;}
+    .wrap[data-preset="portrait"] .signature-field{font-size:30px;}
+    .wrap[data-preset="portrait"] .seal-container svg{width:160px;height:160px;}
+    .wrap[data-preset="portrait"] .bottom-note{border-top:none;padding:0;font-size:14px;margin-top:8px;}
+    .wrap[data-preset="portrait"] .bottom-bar{display:none;}
+    /* 右侧可收缩面板 */
+    .side-panel{position:fixed;top:50%;right:0;transform:translateY(-50%);width:340px;max-height:85vh;background:#fff;border:1px solid #ccc;border-right:none;border-radius:8px 0 0 8px;box-shadow:-2px 0 12px rgba(0,0,0,.12);z-index:100;display:flex;transition:transform .3s ease;overflow:hidden;}
+    .side-panel.collapsed{transform:translate(calc(100% - 42px),-50%);}
+    .side-panel-toggle{width:42px;min-width:42px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:#b8e0f8;cursor:pointer;border-right:1px solid #76bde1;user-select:none;transition:background .2s;}
+    .side-panel-toggle:hover{background:#94cdee;}
+    .side-panel-toggle .toggle-label{writing-mode:vertical-rl;text-orientation:upright;font-size:15px;font-weight:bold;letter-spacing:4px;color:#000;}
+    .side-panel-toggle .toggle-arrow{font-size:18px;color:#000;transition:transform .3s;}
+    .side-panel.collapsed .toggle-arrow{transform:rotate(180deg);}
+    .side-panel-body{flex:1;padding:18px 16px;overflow-y:auto;}
+    .side-panel-body h4{font-size:16px;font-weight:bold;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #ddd;color:#333;}
+    .side-panel-section{margin-bottom:18px;}
+    .side-panel-section:last-child{margin-bottom:0;}
+    .side-panel-btn{display:block;width:100%;padding:9px 12px;margin-bottom:8px;background:#f5f9fc;border:1px solid #c5dff0;border-radius:4px;font-size:14px;cursor:pointer;text-align:left;transition:all .2s;color:#333;}
+    .side-panel-btn:hover{background:#e8f4fc;border-color:#76bde1;}
+    .side-panel-btn:last-child{margin-bottom:0;}
+    .side-panel-btn.danger{background:#fdf0f0;border-color:#f0c5c5;color:#a33;}
+    .side-panel-btn.danger:hover{background:#fbe5e5;border-color:#e0a0a0;}
+    .side-panel-tip{font-size:12px;color:#888;line-height:1.6;margin-top:6px;}
+    .side-panel-row{display:flex;gap:8px;margin-bottom:8px;}
+    .side-panel-row .side-panel-btn{margin-bottom:0;flex:1;text-align:center;}
+    @media(max-width:1420px){body{min-width:1420px;}.preset-tools,.export-tools{margin-left:30px;}}
     </style>
 </head>
 <body>
-<!--免责声明弹窗-->
 <div class="modal-mask" id="disclaimerModal">
     <div class="modal-box">
         <h3>⚠️免责声明⚠️</h3>
         <div class="content">
             1. 本网站仅为文档版式、样式排版演示学习工具，仅供UI设计、网页布局练习预览使用，不属于医疗服务平台，不具备任何医疗机构、执业医师诊疗资质。<br>
-
 2. 网站内提供的处方模板仅为版式样例，不具备任何真实医疗文书法律效力，严禁用于伪造、变造、套用真实处方、病历、诊断证明等医疗文件，严禁用于违法用途。<br>
-
 3. 用户自行在模板内填写的疾病名称、药品名称、医师姓名、日期等全部内容，均仅为文本编辑效果，不代表任何医师诊断、用药建议。如有身体疾病，请前往正规医疗机构就诊，遵从执业医师指导用药，切勿依据本网站内容自行用药。<br>
-
 4. 用户使用本网站，即表示知晓并同意本免责条款。如用户违反法律法规使用本模板，由此产生的一切民事、行政、刑事法律责任，均由使用者本人独立全部承担，本站不承担任何连带责任。<br>
-
 5. 本站不对用户编辑内容的真实性、合法性、准确性做任何担保，不对使用本网站产生的任何直接或间接损失承担赔偿责任。
-
 6. 本声明最终解释权归本站所有。
         </div>
         <button class="modal-btn" onclick="closeModal()">我已阅读并同意</button>
     </div>
 </div>
-
 <div class="preset-tools">
     <label for="presetSelect">样式预设</label>
     <select class="preset-select" id="presetSelect">
@@ -203,7 +206,6 @@ body{background:#eee;padding:20px;}
     </select>
     <span class="preset-description" id="presetDescription">经典黑白分栏版式</span>
 </div>
-
 <div class="preset-tools signature-tools">
     <label for="signatureFontSelect">签名字体</label>
     <select class="preset-select" id="signatureFontSelect">
@@ -215,7 +217,6 @@ body{background:#eee;padding:20px;}
     </select>
     <span class="preset-description" id="signatureFontDescription">通用楷体展示</span>
 </div>
-
 <div class="export-tools" id="exportTools">
     <button class="export-toggle" id="exportToggle" type="button" aria-expanded="false" aria-controls="exportMenu">导出</button>
     <div class="export-menu" id="exportMenu" role="menu">
@@ -225,9 +226,7 @@ body{background:#eee;padding:20px;}
         <button class="export-option" type="button" data-export-format="svg" role="menuitem">导出 SVG</button>
     </div>
 </div>
-
 <div class="wrap">
-    <!--标题区域改为可编辑-->
     <div class="top-title">
         <div class="title-name" contenteditable="true">A省精神卫生中心</div>
         <div class="title-right">
@@ -249,7 +248,6 @@ body{background:#eee;padding:20px;}
         <div class="left-item portrait-only" style="display:none">地址、电话：<span contenteditable>××路×号 0000-00000000</span></div>
         <div class="right-item portrait-only" style="display:none">日期：<span contenteditable>0001-00-00</span></div>
     </div>
-    <!--科室、药房、身份自动均分间距撑满整行-->
     <div class="info-line-1">
         <span>科室：<span contenteditable>临床心理科</span></span>
         <span>药房：<span contenteditable>门诊药房</span></span>
@@ -261,7 +259,6 @@ body{background:#eee;padding:20px;}
         <span>年龄：<span contenteditable>123</span></span>
         <span>单位：<input type="text"></span>
     </div>
-    <!--主处方框 说明文字移至表格最底部-->
     <div class="main-box">
         <div class="left-col">
             <div>临床诊断：<br>
@@ -277,12 +274,28 @@ body{background:#eee;padding:20px;}
                 <div class="drug-text" contenteditable="true">[1]戊酸雌二醇片 21粒/板/盒 BID.口服</div>
             </div>
             <div class="sign-row">
-                <span>医师签字：<span class="signature-field" id="signatureField" contenteditable="true" data-font="kaiti">李四</span></span>
+                <span class="sign-name-wrap">医师签字：
+                    <span class="sig-wrap">
+                        <span class="signature-field" id="signatureField" contenteditable="true" data-font="kaiti">李四</span>
+                        <span class="seal-container" id="sealContainer">
+                            <svg width="200" height="200" viewBox="0 0 200 200">
+                                <defs>
+                                    <path id="sealTopArc" d="M 22,100 A 78,78 0 0,1 178,100" fill="none"/>
+                                </defs>
+                                <circle cx="100" cy="100" r="92" fill="none" stroke="#d42b2b" stroke-width="4.5" pointer-events="none"/>
+                                <text fill="#d42b2b" font-size="21" font-family="KaiTi,STKaiti,SimKai,cursive" letter-spacing="3" contenteditable="true" spellcheck="false" pointer-events="all">
+                                    <textPath href="#sealTopArc" startOffset="50%" text-anchor="middle">A省精神卫生中心</textPath>
+                                </text>
+                                <text x="100" y="115" text-anchor="middle" fill="#d42b2b" font-size="48" pointer-events="none">★</text>
+                                <text x="100" y="155" text-anchor="middle" fill="#d42b2b" font-size="19" font-family="KaiTi,STKaiti,SimKai,cursive" letter-spacing="5" contenteditable="true" spellcheck="false" pointer-events="all">处方专用章</text>
+                            </svg>
+                        </span>
+                    </span>
+                </span>
                 <span>日期：<span contenteditable>0001-00-00</span></span>
             </div>
         </div>
     </div>
-    <!--底部审核行-->
     <div class="bottom-bar">
         <span>审核 <input value="王小明"></span>
         <span>调配 <input value="李小红"></span>
@@ -290,8 +303,6 @@ body{background:#eee;padding:20px;}
         <span>发药 <input value="赵小丽"></span>
         <span>金额 <input value="1234"></span>
     </div>
-
-    <!--竖版专用：以下空白、双栏页脚、总费用与取药说明。横版预设下隐藏。-->
     <hr class="dashed-divider portrait-only" style="display:none">
     <div class="portrait-note portrait-only" style="display:none">以下空白</div>
     <div class="portrait-footer portrait-only" style="display:none">
@@ -314,10 +325,51 @@ body{background:#eee;padding:20px;}
     </div>
     <div class="portrait-note portrait-only" style="display:none">取药须知：请核对药品名称、数量及用法用量；如有疑问请咨询药师。本处方当日有效。</div>
 </div>
+<!--右侧可收缩工具面板-->
+<div class="side-panel" id="sidePanel">
+    <div class="side-panel-toggle" id="sidePanelToggle" title="展开/收起">
+        <span class="toggle-label">工具面板</span>
+        <span class="toggle-arrow">◀</span>
+    </div>
+    <div class="side-panel-body">
+        <div class="side-panel-section">
+            <h4>快捷操作</h4>
+            <button class="side-panel-btn" id="btnFillDemo">填充示例数据</button>
+            <button class="side-panel-btn" id="btnClearAll">清空所有内容</button>
+            <button class="side-panel-btn" id="btnSeal">生成公章</button>
+            <div class="side-panel-tip">点击生成/移除示例公章；公章上的文字可直接点击编辑，仅作版式展示无法律效力</div>
+        </div>
+        <div class="side-panel-section">
+            <h4>药品快捷输入</h4>
+            <button class="side-panel-btn" data-drug="[1]戊酸雌二醇片 21粒/板/盒 BID.口服">戊酸雌二醇片</button>
+            <button class="side-panel-btn" data-drug="[1]螺内酯片 20mg×100片 TID.口服">螺内酯片</button>
+            <button class="side-panel-btn" data-drug="[1]醋酸环丙孕酮片 50mg×50片 QD.口服">醋酸环丙孕酮片</button>
+            <button class="side-panel-btn" data-drug="[1]黄体酮软胶囊 100mg×30粒 BID.口服">黄体酮软胶囊</button>
+            <button class="side-panel-btn" data-drug="[1]普瑞巴林胶囊 75mg×32粒 BID.口服">普瑞巴林胶囊</button>
+            <button class="side-panel-btn" data-drug="[1]盐酸美金刚片 10mg×60片 QD.口服">盐酸美金刚片</button>
+            <button class="side-panel-btn" data-drug="[1]盐酸金刚烷胺片 0.1g×100片 QD.口服">盐酸金刚烷胺片</button>
+            <button class="side-panel-btn" data-drug="[1]加巴喷丁胶囊 0.3g×10粒×盒 BID.口服">加巴喷丁胶囊</button>
+            <div class="side-panel-tip">点击药品名称可快速填入处方栏</div>
+        </div>
+        <div class="side-panel-section">
+            <h4>诊断快捷输入</h4>
+            <button class="side-panel-btn" data-diag="易性症">易性症</button>
+            <button class="side-panel-btn" data-diag="广泛性焦虑症">广泛性焦虑症</button>
+            <button class="side-panel-btn" data-diag="带状疱疹后神经痛">带状疱疹后神经痛</button>
+            <button class="side-panel-btn" data-diag="帕金森病">帕金森病</button>
+            <button class="side-panel-btn" data-diag="阿尔兹海默型痴呆">阿尔兹海默型痴呆</button>
+            <button class="side-panel-btn" data-diag="癫痫">癫痫</button>
+            <div class="side-panel-tip">点击疾病名称可快速填入诊断栏</div>
+        </div>
+        <div class="side-panel-section">
+            <h4>关于</h4>
+            <div class="side-panel-tip">本工具仅为文档版式排版演示，所有内容均为虚构示例，不具备任何医疗文书效力。</div>
+        </div>
+    </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
 <script>
-//关闭弹窗
 function closeModal(){
     document.getElementById("disclaimerModal").style.display="none";
 }
@@ -326,7 +378,6 @@ document.querySelectorAll('[contenteditable]').forEach(el=>{
         if(e.key==='Enter') e.preventDefault();
     })
 })
-
 const exportTools=document.getElementById('exportTools');
 const exportToggle=document.getElementById('exportToggle');
 const exportMenu=document.getElementById('exportMenu');
@@ -349,15 +400,12 @@ const signatureFontPresets={
     'zhi-mang-xing':{label:'行书风格展示体',font:'36px "Zhi Mang Xing"'},
     'liu-jian-mao-cao':{label:'流动草书展示体',font:'36px "Liu Jian Mao Cao"'}
 };
-
 function readStoredValue(key){
     try{return localStorage.getItem(key)}catch(error){return null}
 }
-
 function saveStoredValue(key,value){
     try{localStorage.setItem(key,value)}catch(error){}
 }
-
 function applyPreset(preset){
     const selectedPreset=Object.hasOwn(presets,preset)?preset:'classic';
     exportTarget.dataset.preset=selectedPreset;
@@ -365,7 +413,6 @@ function applyPreset(preset){
     presetDescription.textContent=presets[selectedPreset];
     saveStoredValue('rxGeneratorPreset',selectedPreset);
 }
-
 async function applySignatureFontPreset(fontPreset){
     const selectedFont=Object.hasOwn(signatureFontPresets,fontPreset)?fontPreset:'kaiti';
     signatureField.dataset.font=selectedFont;
@@ -376,17 +423,14 @@ async function applySignatureFontPreset(fontPreset){
         try{await document.fonts.load(signatureFontPresets[selectedFont].font)}catch(error){}
     }
 }
-
 applyPreset(readStoredValue('rxGeneratorPreset'));
 applySignatureFontPreset(readStoredValue('rxGeneratorSignatureFontPreset'));
 presetSelect.addEventListener('change',event=>applyPreset(event.target.value));
 signatureFontSelect.addEventListener('change',event=>applySignatureFontPreset(event.target.value));
-
 function setExportMenu(open){
     exportMenu.classList.toggle('is-open',open);
     exportToggle.setAttribute('aria-expanded',open);
 }
-
 function downloadFile(dataUrl,fileName){
     const link=document.createElement('a');
     link.href=dataUrl;
@@ -395,19 +439,16 @@ function downloadFile(dataUrl,fileName){
     link.click();
     link.remove();
 }
-
 function exportFileName(extension){
     const now=new Date();
     const stamp=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0'),String(now.getHours()).padStart(2,'0'),String(now.getMinutes()).padStart(2,'0'),String(now.getSeconds()).padStart(2,'0')].join('');
     return `处方笺_${stamp}.${extension}`;
 }
-
 async function exportPrescription(format){
     if(!window.htmlToImage||(format==='pdf'&&!window.jspdf)){
         alert('导出组件加载失败，请检查网络后刷新页面重试。');
         return;
     }
-
     if(document.activeElement) document.activeElement.blur();
     if(document.fonts) await document.fonts.ready;
     exportTools.classList.add('is-exporting');
@@ -415,13 +456,8 @@ async function exportPrescription(format){
     exportToggle.disabled=true;
     exportToggle.textContent='正在导出…';
     setExportMenu(false);
-
-    //导出前临时取消 .wrap 的居中 auto 外边距：html-to-image 会克隆节点原位渲染，
-    //居中的 auto margin 会让绝对定位子元素（标题、审核栏等）相对画布整体偏移，
-    //造成左侧空白、右侧内容被裁切。导出完成后立即恢复原值。
     const savedMargin=exportTarget.style.margin;
     exportTarget.style.margin='0';
-
     const options={backgroundColor:'#ffffff',pixelRatio:2,cacheBust:true};
     try{
         if(format==='jpg'){
@@ -458,12 +494,92 @@ async function exportPrescription(format){
         exportToggle.textContent='导出';
     }
 }
-
 exportToggle.addEventListener('click',()=>setExportMenu(!exportMenu.classList.contains('is-open')));
 exportOptions.forEach(button=>button.addEventListener('click',()=>exportPrescription(button.dataset.exportFormat)));
 document.addEventListener('click',event=>{
     if(!exportTools.contains(event.target)) setExportMenu(false);
 });
+// ===== 右侧可收缩面板 =====
+const sidePanel=document.getElementById('sidePanel');
+const sidePanelToggle=document.getElementById('sidePanelToggle');
+function setSidePanel(open){
+    sidePanel.classList.toggle('collapsed',!open);
+    saveStoredValue('rxGeneratorSidePanelOpen',open?'1':'0');
+}
+sidePanelToggle.addEventListener('click',()=>{
+    setSidePanel(sidePanel.classList.contains('collapsed'));
+});
+const savedPanelOpen=readStoredValue('rxGeneratorSidePanelOpen');
+if(savedPanelOpen==='0') sidePanel.classList.add('collapsed');
+// ===== 公章生成 =====
+const sealContainer=document.getElementById('sealContainer');
+const btnSeal=document.getElementById('btnSeal');
+const sealTopText=sealContainer.querySelector('textPath');
+const sealBottomText=sealContainer.querySelectorAll('text')[2];
+function setSeal(show){
+    sealContainer.style.display=show?'block':'none';
+    btnSeal.textContent=show?'移除公章':'生成公章';
+}
+btnSeal.addEventListener('click',()=>{
+    setSeal(sealContainer.style.display!=='block');
+});
+function resetSealText(){
+    sealTopText.textContent='A省精神卫生中心';
+    sealBottomText.textContent='处方专用章';
+}
+// 公章文字点击即可编辑（contenteditable），禁止回车换行
+sealContainer.querySelectorAll('text[contenteditable="true"]').forEach(el=>{
+    el.addEventListener('keydown',e=>{
+        if(e.key==='Enter'){e.preventDefault();e.target.blur();}
+    });
+});
+document.getElementById('btnFillDemo').addEventListener('click',()=>{
+    document.querySelector('.title-name').textContent='A省精神卫生中心';
+    const row1Spans=document.querySelectorAll('.row1 span[contenteditable]');
+    if(row1Spans[0]) row1Spans[0].textContent='1234567890';
+    if(row1Spans[1]) row1Spans[1].textContent='普通门诊';
+    const row2Spans=document.querySelectorAll('.row2 span[contenteditable]');
+    if(row2Spans[0]) row2Spans[0].textContent='1234567890';
+    if(row2Spans[1]) row2Spans[1].textContent='自费';
+    const info1Spans=document.querySelectorAll('.info-line-1 span[contenteditable]');
+    if(info1Spans[0]) info1Spans[0].textContent='临床心理科';
+    if(info1Spans[1]) info1Spans[1].textContent='门诊药房';
+    if(info1Spans[2]) info1Spans[2].textContent='一般人员';
+    const info2Spans=document.querySelectorAll('.info-line-2 span[contenteditable]');
+    if(info2Spans[0]) info2Spans[0].textContent='张三';
+    if(info2Spans[1]) info2Spans[1].textContent='男';
+    if(info2Spans[2]) info2Spans[2].textContent='28';
+    const diagInput=document.querySelector('.left-col input');
+    if(diagInput) diagInput.value='易性症';
+    const drugText=document.querySelector('.drug-text');
+    if(drugText) drugText.textContent='[1]戊酸雌二醇片 21粒/板/盒 BID.口服';
+    const sigField=document.getElementById('signatureField');
+    if(sigField) sigField.textContent='李四';
+    const signEditable=document.querySelectorAll('.sign-row span[contenteditable]');
+    if(signEditable[1]) signEditable[1].textContent='示例医师';
+    resetSealText();
+    setSeal(true);
+});
+document.getElementById('btnClearAll').addEventListener('click',()=>{
+    if(!confirm('确定清空所有可编辑内容？')) return;
+    document.querySelectorAll('[contenteditable]').forEach(el=>{el.textContent='';});
+    document.querySelectorAll('input').forEach(el=>{if(el.type!=='button'&&el.type!=='select') el.value='';});
+    resetSealText();
+    setSeal(false);
+});
+document.querySelectorAll('[data-drug]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+        const drugText=document.querySelector('.drug-text');
+        if(drugText) drugText.textContent=btn.dataset.drug;
+    });
+});
+document.querySelectorAll('[data-diag]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+        const diagInput=document.querySelector('.left-col input');
+        if(diagInput) diagInput.value=btn.dataset.diag;
+    });
+});
 </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"1ad265ac3411442688568c13f951208e","r":1}' crossorigin="anonymous"></script>
 </body>
 </html>
