@@ -5,6 +5,12 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.1.0] - 2026-08-20
+
+### 新增
+
+- 页面右上角导出工具栏新增 GitHub 图标，点击后在新标签页打开本仓库（内联 SVG，不依赖 CDN，离线可用）。
+
 ## [1.0.0] - 2026-08-17
 
 首个正式版本：核心编辑、版式预设、签名字体与导出功能齐备，并新增印章层与视觉优化。
@@ -44,6 +50,7 @@
 - PDF 导出自动选择横竖方向并缩放至单页 A4。
 - 项目 README 与在线演示链接。
 
+[1.1.0]: https://github.com/hc5216/Rx-Generator/releases/tag/v1.1.0
 [1.0.0]: https://github.com/hc5216/Rx-Generator/releases/tag/v1.0.0
 [0.2.0]: https://github.com/hc5216/Rx-Generator/releases/tag/v0.2.0
 [0.1.0]: https://github.com/hc5216/Rx-Generator/releases/tag/v0.1.0
