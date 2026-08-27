@@ -9,7 +9,7 @@
     @font-face{font-family:"Long Cang";src:url("assets/fonts/long-cang/LongCang-Regular.ttf") format("truetype");font-display:swap;}
     @font-face{font-family:"Zhi Mang Xing";src:url("assets/fonts/zhi-mang-xing/ZhiMangXing-Regular.ttf") format("truetype");font-display:swap;}
     @font-face{font-family:"Liu Jian Mao Cao";src:url("assets/fonts/liu-jian-mao-cao/LiuJianMaoCao-Regular.ttf") format("truetype");font-display:swap;}
-    /* 符号回退字体链：宋体缺 ℞/◀/★ 等符号时依次回退，避免显示为豆腐块 */
+    /* 符号回退字体链：宋体缺 ◀/★ 等符号时依次回退，避免显示为豆腐块（℞ 已改为内嵌 SVG，见 .r-mark） */
     *{box-sizing:border-box;margin:0;padding:0;font-family:"SimSun","宋体","Segoe UI Symbol","Noto Sans Symbols 2","Noto Sans Symbols","Arial Unicode MS","Microsoft YaHei",serif;}
 body{background:linear-gradient(135deg,#b8d4f5 0%,#ffffff 50%,#f5c8dc 100%);padding:20px;user-select:none;-webkit-user-select:none;min-height:100vh;}
 /* 仅可编辑区域允许选中复制 */
@@ -33,8 +33,10 @@ body{background:linear-gradient(135deg,#b8d4f5 0%,#ffffff 50%,#f5c8dc 100%);padd
 .main-box{border:2px solid #000;display:grid;grid-template-columns:240px 1fr;min-height:480px;}
 .left-col{border-right:2px solid #000;padding:16px;font-size:22px;line-height:2.2;display:flex;flex-direction:column;justify-content:space-between;}
 .right-col{padding:20px;font-size:24px;line-height:2.4;display:flex;flex-direction:column;justify-content:space-between;}
-/* ℞（U+211E）不在宋体字库内，符号字体优先确保正常渲染 */
-.r-mark{font-size:60px;font-style:italic;margin-bottom:8px;font-family:"Segoe UI Symbol","Noto Sans Symbols 2","Noto Sans Symbols","Arial Unicode MS","SimSun","宋体",serif;}
+/* ℞（U+211E）以内嵌 SVG 路径渲染（字形取自 DejaVu Sans 并做斜体变换），
+   不依赖任何系统字体：缺少该字库的移动端也不会显示为乱码或豆腐块 */
+.r-mark{font-size:60px;margin-bottom:8px;}
+.r-mark svg{display:block;height:1em;width:auto;fill:currentColor;}
 .drug-text{border:none;outline:none;display:block;}
 .bottom-note{border-top:2px solid #000;padding:16px;font-size:18px;line-height:1.6;}
     .sign-row{display:flex;justify-content:flex-end;gap:80px;padding:10px 0;font-size:20px;align-items:center;}
@@ -280,7 +282,7 @@ body{background:linear-gradient(135deg,#b8d4f5 0%,#ffffff 50%,#f5c8dc 100%);padd
         </div>
         <div class="right-col">
             <div>
-                <div class="r-mark">℞</div>
+                <div class="r-mark"><svg viewBox="169 0 1592.04 1493" role="img" aria-label="处方符号"><path fill="currentColor" d="M557.4976876500734 166 478.65427938203186 727H732.6542793820319Q873.6542793820319 727 960.9137603153065 654.0Q1048.173241248581 581 1067.1462539334038 446Q1085.9787257835244 312 1019.2382067167989 239.0Q952.4976876500734 166 811.4976876500734 166ZM1004.913705895364 839Q882.3245008214349 893 709.3245008214349 893H455.32450082143487L371.0 1493H169.0L378.8274662106704 0H834.8274662106704Q1085.8274662106705 0 1198.376081471949 113.5Q1310.9246967332276 227 1280.1462539334038 446Q1255.9732303645926 618 1162.9353610514368 725L1306.156918251613 944L1529.0434735719725 710H1761.0434735719725L1400.9190380544685 1088L1667.0 1493H1434.0L1263.5406170226217 1233L1015.0 1493H783.0L1168.9190380544685 1088Z"/></svg></div>
                 <div class="drug-text" contenteditable="true">①戊酸雌二醇片 21粒/板/盒 BID.口服</div>
             </div>
             <div class="sign-row">
